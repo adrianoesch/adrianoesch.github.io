@@ -19,13 +19,36 @@
     height: 1200px;
     margin: 50px 150px;
   }
+  .cell .detailtext {
+      position:relative;
+      background-color: black;
+      color: white;
+      text-align: center;
+      font-size: 12px;
+      width: 50px;
+      border-radius:5px;
+      left:15px;
+      top:5;
+      padding:5px;
+      z-index: 1000;
+      opacity:0;
+  }
+
+  .cell:hover .detailtext {
+      /*visibility: visible;*/
+      opacity: 1;
+      -webkit-animation: fadeEffect 0.5s;
+      animation: fadeEffect 0.5s;
+  }
   #template{
     position:relative;
     float:left;
     margin: 20px 40px;
+    z-index: -2;
   }
   #template img{
     width : 646px;
+    z-index: -2;
   }
   /* Style the list */
   ul{
@@ -101,6 +124,7 @@
     position: relative;
     width: 19px;
     margin: 0.5px;
+    z-index:0;
   }
   #canvas{
     float: left;
@@ -135,7 +159,7 @@
   <li class="title" id='var'><strong>Measure:</strong></li>
   <li><a id='mean' class="measureTab" onclick="update(event)">Mean</a></li>
   <li><a id='median' class="measureTab active" onclick="update(event)">Median</a></li>
-  <li><a id='max' class="measureTab" onclick="update(event)">Max</a></li>
+  <!-- <li><a id='max' class="measureTab" onclick="update(event)">Max</a></li> -->
   <li><a id='mdp' class="measureTab" onclick="update(event)">MDP</a></li>
 </ul>
 <div id="canvas">
@@ -177,12 +201,13 @@ function updateData(){
   flatCms = [].concat.apply([],cms)
   maxVal = math.max(flatCms)
   minVal = math.min(flatCms)
-  adjustScale(maxVal,minVal)
+  adjustScale(maxVal,minVal,measure)
   colorRange = getColorRange(maxVal,minVal)
   for(i=0;i<coords.length;i++){
     var div = $('#'+coords[i])
     div.css('background-color',colorRange(cms[i]))
-    div.css('opacity','0.8')
+    div.css('opacity','.8')
+    $('#'+coords[i]+' .detailtext').html('<span>'+cms[i].toString()+' cm</span>')
   }
 }
 
@@ -203,13 +228,14 @@ function getScale(maxVal){
 	var y = d3.scaleLinear().range([maxVal, 0]).domain([1, maxVal]);
 }
 
-function adjustScale(maxVal, minVal=0){
+function adjustScale(maxVal, minVal=0,measure){
 	var key = d3.select("svg");
   d3.select('g').remove()
-	var y = d3.scaleLinear().range([439, 0]).domain([minVal, maxVal]);
+  d3.select('text').remove()
+	var y = d3.scaleLinear().range([439, 0]).domain([0, maxVal]);
 	var yAxis = d3.axisRight().scale(y);
 	key.append("g").attr("class", "y axis").attr("transform", "translate(41,10)").call(yAxis)
-  key.append("text").attr("transform", "rotate(-90)").attr("y", 70).attr("x", -10).attr("dy", ".71em").style("text-anchor", "end").text("cm");
+  key.append("text").attr("transform", "rotate(-90)").attr("y", 70).attr("x", -10).attr("dy", ".71em").style("text-anchor", "end").text(measure == 'mdp'?'MDP':"cm");
 }
 
 
@@ -234,6 +260,7 @@ for(i=0;i<22*34;i++){
         .attr('id',coordi)
         .style('background-color','black')
         .style('opacity','0.05')
+        .append('div').attr('class','detailtext')
 }
 
 var d = {};
@@ -259,7 +286,7 @@ d3.csv('monthlySums.csv',function(data){
       d2[i.coord][i.month.toLowerCase()] = {};
     }
     d[i.coord][i.month.toLowerCase()][+i.season] = +i.cm
-    d2[i.coord][i.month.toLowerCase()][+i.season] = +i.dump
+    d2[i.coord][i.month.toLowerCase()][+i.season] = +i.dump>1?1:0;
   });
 
   coords.map(function(c){
@@ -269,7 +296,7 @@ d3.csv('monthlySums.csv',function(data){
             d[c]['overall'][y] =  math.sum(months.map(function(m){
               return d[c][m][y]||0 }));
             d2[c]['overall'][y] =  math.sum(months.map(function(m){
-              return d[c][m][y]||0 }));
+              return d2[c][m][y]||0 }))>1?1:0;
           })
       });
 
