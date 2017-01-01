@@ -1,0 +1,166 @@
+body{
+  font-family: "Arial";
+  background: rgb(230,230,230);
+  background: -moz-linear-gradient(top, rgb(230,230,230),  rgb(150,150,150) );
+  background: -webkit-linear-gradient(top, rgb(230,230,230),  rgb(150,150,150) );
+}
+#container{
+  background-color: white;
+  border-radius: 20px;
+  padding:40px;
+  width: 900px;
+  height: 1200px;
+  margin: 50px 150px;
+}
+.cell .detailtext {
+    visibility:hidden;
+    position:relative;
+    background-color: black;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    width: 50px;
+    border-radius:5px;
+    left:15px;
+    top:5;
+    padding:5px;
+    z-index: 1000;
+    opacity:0;
+}
+
+.cell:hover .detailtext {
+    visibility: visible;
+    opacity: 1;
+    -webkit-animation: fadeEffect 0.5s;
+    animation: fadeEffect 0.5s;
+}
+.cell:hover {
+  margin: -0.5px;
+  border: 0.5px solid black;
+}
+#template{
+  position:relative;
+  float:left;
+  margin: 20px 40px;
+  z-index: -2;
+}
+#template img{
+  width : 646px;
+  z-index: -2;
+}
+/* Style the list */
+ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    text-align: center;
+    background-color: rgb(200,200,200);
+}
+ul.tab2{
+    margin-top: 3px;
+    background-color: rgb(220,220,220);
+}
+
+/* Float the list items side by side */
+ul li {float: left;}
+
+
+/* Style the links inside the list items */
+ul li a{
+    display: inline-block;
+    color: black;
+    text-align: center;
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 17px;
+}
+ul li.title{
+    display: inline-block;
+    color: black;
+    text-align: center;
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of links on hover */
+ul li a:hover,a:focus,.active {background-color: rgb(160,160,160);}
+
+#var{
+    width:120px;
+    float: left;
+    text-align:right;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+.tabcontent {
+    -webkit-animation: fadeEffect 1s;
+    animation: fadeEffect 1s; /* Fading effect takes 1 second */
+}
+
+@-webkit-keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+.cell{
+  float: left;
+  height: 19px;
+  position: relative;
+  width: 19px;
+  margin: 0.5px;
+  z-index:0;
+}
+#canvas{
+  float: left;
+  position: relative;
+  top:30px;
+  background-image: url(./template.png);
+  width: 680px;
+  height: 440px;
+  background-size: 680px 440px;
+  background-repeat: no-repeat;
+}
+#scale{
+  float:left;
+  top: 20px;
+  left: 40px;
+  position: relative;
+}
+#hist{
+  position:absolute;
+  height:200px;
+  width:300px;
+  background-color: black;
+  border-radius: 10px;
+  opacity:0.9;
+  z-index:1000;
+}
+#close{
+  float:right;
+  height:20px;
+  width:20px;
+  margin:10px;
+  color:white;
+  display:block;
+  box-sizing:border-box;
+  border-width:1px;
+  border-style: solid;
+  border-color:white;
+  border-radius:100%;
+  background: -webkit-linear-gradient(-45deg, transparent 0%, transparent 46%, white 46%,  white 53%,transparent 53%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, white 46%,  white 53%,transparent 53%, transparent 100%);
+  box-shadow:0px 0px 2px 2px rgba(0,0,0,0.5);
+}
