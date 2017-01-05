@@ -1,6 +1,7 @@
 body{
   font-family: "Arial";
   background: rgb(230,230,230);
+  color: rgb(50,50,50);
   background: -moz-linear-gradient(top, rgb(230,230,230),  rgb(150,150,150) );
   background: -webkit-linear-gradient(top, rgb(230,230,230),  rgb(150,150,150) );
 }
@@ -145,6 +146,7 @@ ul li a:hover,a:focus,.active {background-color: rgb(160,160,160);}
   float:left;
   top: 20px;
   left: 40px;
+  height:500px;
   position: relative;
 }
 #hist{

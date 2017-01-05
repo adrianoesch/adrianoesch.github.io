@@ -10,7 +10,7 @@
   <h1>Snow Report Data Version 0.1</h1>
 <ul class="tab">
   <li class="title" id='var'><strong>Time Period:</strong></li>
-  <li><a id='overall' class="timeTab active" onclick="canv.tabs(event)">Overall</a></li>
+  <li><a id='overall' class="timeTab active" onclick="canv.tabs(event)">All Year</a></li>
   <li><a id='dec' class="timeTab" onclick="canv.tabs(event)">December</a></li>
   <li><a id='jan' class="timeTab" onclick="canv.tabs(event)">January</a></li>
   <li><a id='feb' class="timeTab" onclick="canv.tabs(event)">February</a></li>
@@ -20,15 +20,18 @@
 <ul class="tab2">
   <li class="title" id='var'><strong>Measure:</strong></li>
   <!-- <li><a id='mean' class="measureTab" onclick="canv.tabs(event)">Mean</a></li> -->
-  <li><a id='median' class="measureTab active" onclick="canv.tabs(event)">Median</a></li>
+  <li><a id='median' class="measureTab active" onclick="canv.tabs(event)">Median*</a></li>
   <!-- <li><a id='max' class="measureTab" onclick="update(event)">Max</a></li> -->
-  <li><a id='mdp' class="measureTab" onclick="canv.tabs(event)">MDP*</a></li>
+  <li><a id='mdp' class="measureTab" onclick="canv.tabs(event)">MDP**</a></li>
 </ul>
 <div id="canvas">
 </div>
 <div id='scale'>
 </div>
-  <div style="font-size:14px;float:left;position:relative;">*MDP: Major Dump Probability describes the ratio of years with over 30cm snowfall during 48h in a given time period.</span>
+  <div style="font-size:14px;float:left;position:relative;">
+    *Median: The Median describes the "middle" amount of snow fall in a given time period over the past 15 years (<a target="_blank" style="text-decoration:underline;color:black;" href="https://en.wikipedia.org/wiki/Median">Wiki</a>).</br>
+    **MDP: Major Dump Probability describes the ratio of years with over 30cm snowfall during 48h in a given time period.
+  </div>
 </div>
 
 </body>
