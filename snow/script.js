@@ -95,7 +95,7 @@ var hist = {
 
   measure = $('.measureTab.active')[0].id
   time = $('.timeTab.active')[0].id
-  var data = Object.values(d[srcId][time])
+  var data = seasons.map(function(i){return d[srcId][time][i]})
 
   var height = 130
   var width = 230
@@ -109,7 +109,7 @@ var hist = {
 
   var bins = d3.histogram()
       .domain(x.domain())
-      .thresholds(x.ticks( time == 'overall' ? 8 : 8))
+      .thresholds(x.ticks( time == 'overall' ? 8 : 5))
       (data);
 
   var maxY = math.max(bins.map(function(i) {return i.length}))
