@@ -34,9 +34,24 @@ body{
     -webkit-animation: fadeEffect 0.5s;
     animation: fadeEffect 0.5s;
 }
-.cell:hover {
-  margin: -0.5px;
-  border: 0.5px solid black;
+.cell:hover, .cell.activeCell {
+  border: 4px solid black;
+  width: 12px;
+  height: 12px;
+}
+.cell{
+  float: left;
+  height: 18px;
+  position: relative;
+  width: 18px;
+  border: 1px solid white;
+  z-index:0;
+}
+.histTitle{
+  position:absolute;
+  top:12px;
+  left:35px;
+  color: rgb(230,230,230);
 }
 #template{
   position:relative;
@@ -116,14 +131,6 @@ ul li a:hover,a:focus,.active {background-color: rgb(160,160,160);}
     from {opacity: 0;}
     to {opacity: 1;}
 }
-.cell{
-  float: left;
-  height: 19px;
-  position: relative;
-  width: 19px;
-  margin: 0.5px;
-  z-index:0;
-}
 #canvas{
   float: left;
   position: relative;
@@ -144,12 +151,36 @@ ul li a:hover,a:focus,.active {background-color: rgb(160,160,160);}
   position:absolute;
   height:200px;
   width:300px;
-  background-color: black;
+  background-color: rgba(0,0,0,0.9);
   border-radius: 10px;
-  opacity:0.9;
   z-index:1000;
 }
+.histSvg{
+  position: absolute;
+  float: right;
+  width: 240px;
+  left:10px;
+  top:30px;
+  padding-top:10px;
+  padding-left:25px;
+  height: 180px;
+  z-index: 1001;
+}
+.bar rect {
+  fill: steelblue;
+  border:1px solid black;
+  z-index:2000;
+}
+
+.histAxis text {
+  fill: rgb(230,230,230);
+  font: 10px sans-serif;
+}
+.histAxis path, .histAxis line{
+ stroke:rgb(230,230,230);
+}
 #close{
+  position:relative;
   float:right;
   height:20px;
   width:20px;

@@ -1,5 +1,6 @@
 var canv = {
   tabs: function(evt) {
+    hist.remove()
     srcClasses = evt.srcElement.className.split(' ')
     if(srcClasses.indexOf('measureTab')>=0){
       d3.selectAll('.measureTab').classed('active',false)
@@ -33,7 +34,7 @@ var canv = {
       var div = $('#'+coords[i])
       div.css('background-color',colorRange(cms[i]))
       div.css('opacity','.8')
-      $('#'+coords[i]+' .detailtext').html('<span>'+math.round(cms[i],2).toString()+' cm</span>')
+      $('#'+coords[i]+' .detailtext').html('<span>'+math.round(cms[i],2).toString()+(measure=='mdp'?' ':' cm')+'</span>')
     }
   },
   getColorRange : function(maxVal,minVal){
@@ -48,8 +49,8 @@ var canv = {
       var w = 140, h = 540;
     	var key = d3.select("#scale").append("svg").attr("width", w).attr("height", h);
     	var legend = key.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "100%").attr("y1", "0%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
-    	legend.append("stop").attr("offset", "0%").attr("stop-color", highRGB).attr("stop-opacity", 1);
-    	legend.append("stop").attr("offset", "100%").attr("stop-color", lowRGB).attr("stop-opacity", 1);
+    	legend.append("stop").attr("offset", "0%").attr("stop-color", highRGB).attr("stop-opacity", 0.9);
+    	legend.append("stop").attr("offset", "100%").attr("stop-color", lowRGB).attr("stop-opacity", 0.9);
     	key.append("rect").attr("width", w - 100).attr("height", h - 100).style("fill", "url(#gradient)").attr("transform", "translate(0,10)");
     	var y = d3.scaleLinear().range([maxVal, 0]).domain([1, maxVal]);
     },
@@ -61,7 +62,7 @@ var canv = {
     	var y = d3.scaleLinear().range([439, 0]).domain([0, maxVal]);
     	var yAxis = d3.axisRight().scale(y);
     	key.append("g").attr("class", "y axis").attr("transform", "translate(41,10)").call(yAxis)
-      key.append("text").attr("transform", "rotate(-90)").attr("y", 70).attr("x", -10).attr("dy", ".71em").style("text-anchor", "end").text(measure == 'mdp'?'MDP':"cm");
+      key.append("text").attr("transform", "rotate(-90)").attr("y", 70).attr("x", -10).attr("dy", ".78em").style("text-anchor", "end").text(measure == 'mdp'?'MDP':"cm");
     }
   }
 };
@@ -70,20 +71,78 @@ var hist = {
   pop: function(evt){
     srcId = evt.srcElement.id
     try{
-      d3.select('#hist').remove()
+      this.remove()
     }catch(err){}
-    d3.select('#canvas')
+
+    d3.select('#'+srcId.toString()).attr('class','activeCell cell')
+    var hist = d3.select('#canvas')
       .append('div')
       .attr('id','hist')
       .attr('style','top:'+(evt.pageY-280).toString()+';left:'+(evt.pageX-200).toString()+';')
-      .append('div')
+
+    var svg = hist.append('svg')
+      .attr('class','histSvg')
+
+    hist.append('div')
       .attr('id','close')
       .attr('onclick','hist.remove()')
-    d3.select('#'+srcId).attr('class','cell focus')
+
+    hist.append('div')
+      .attr('class','histTitle')
+      .html('Histogram')
+
+    var g = svg.append("g")
+
+  measure = $('.measureTab.active')[0].id
+  time = $('.timeTab.active')[0].id
+  var data = Object.values(d[srcId][time])
+
+  var height = 130
+  var width = 230
+
+  var formatCount = d3.format("0f");
+  var maxX = time == 'overall' ? 700 : 200;
+
+  var x = d3.scaleLinear()
+      .domain([0,maxX])
+      .rangeRound([0, width]);
+
+  var bins = d3.histogram()
+      .domain(x.domain())
+      .thresholds(x.ticks( time == 'overall' ? 8 : 8))
+      (data);
+
+  var maxY = math.max(bins.map(function(i) {return i.length}))
+
+  var y = d3.scaleLinear()
+      .domain([0,maxY+1])
+      .range([height, 0]);
+
+  var bar = g.selectAll(".bar")
+    .data(bins)
+    .enter().append("g")
+      .attr("class", "bar")
+      .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; });
+
+  bar.append("rect")
+      .attr("x", 1)
+      .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
+      .attr("height", function(d) { return height - y(d.length); });
+
+  g.append("g")
+      .attr("class", "histAxis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x).ticks(8));
+
+  g.append("g")
+      .attr("class", "histAxis axis--y")
+      .call(d3.axisLeft(y).ticks(4));
+
   },
   remove : function(){
     try{
       d3.select('#hist').remove()
+      d3.selectAll('.cell').attr('class','cell')
     }catch(err){}
   }
 };
@@ -122,6 +181,7 @@ for(i=0;i<coords.length;i++){
 
 var d = {};
 var d2 = {};
+var maxs = {};
 
 var funs = {
   max : math.max,
@@ -131,7 +191,7 @@ var funs = {
   mdp : math.mean
 };
 
-d3.csv('monthlySums.csv',function(data){
+d3.csv('monthlySums3.csv',function(data){
 
   data.forEach(function(i){
     if(typeof d[i.coord]=='undefined'){
@@ -156,6 +216,7 @@ d3.csv('monthlySums.csv',function(data){
               return d2[c][m][y]||0 }))>1?1:0;
           })
       });
+
 
   canv.scale.get(100)
   canv.data()
