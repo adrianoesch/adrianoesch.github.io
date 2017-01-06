@@ -70,10 +70,7 @@ var canv = {
 var hist = {
   pop: function(evt){
     srcId = evt.srcElement.id
-    try{
-      this.remove()
-    }catch(err){}
-
+    this.remove()
     d3.select('#'+srcId.toString()).attr('class','activeCell cell')
     var hist = d3.select('#canvas')
       .append('div')

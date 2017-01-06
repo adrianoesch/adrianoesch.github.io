@@ -1,9 +1,12 @@
 body{
   font-family: "Arial";
   background: rgb(230,230,230);
-  color: rgb(50,50,50);
+  color: rgb(40,40,40);
   background: -moz-linear-gradient(top, rgb(230,230,230),  rgb(150,150,150) );
   background: -webkit-linear-gradient(top, rgb(230,230,230),  rgb(150,150,150) );
+}
+a {
+  color: rgb(40,40,40);
 }
 #container{
   background-color: white;
@@ -136,6 +139,7 @@ ul li a:hover,a:focus,.active {background-color: rgb(160,160,160);}
   float: left;
   position: relative;
   top:30px;
+  left:50px;
   background-image: url(./template.png);
   width: 680px;
   height: 440px;
@@ -145,7 +149,7 @@ ul li a:hover,a:focus,.active {background-color: rgb(160,160,160);}
 #scale{
   float:left;
   top: 20px;
-  left: 40px;
+  left: 90px;
   height:500px;
   position: relative;
 }
