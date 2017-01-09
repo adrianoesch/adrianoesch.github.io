@@ -18,23 +18,36 @@ var canv = {
     cms = []
     if(measure == 'mdp'){
       for(i=0;i<coords.length;i++){
-        cms.push(funs[measure](seasons.map(function(s){return d2[coords[i]][time][s]|| 0})))
+        cms.push(math.mean(seasons.map(function(s){return d2[coords[i]][time][s]|| 0})))
       }
     }else{
       for(i=0;i<coords.length;i++){
-        cms.push(funs[measure](seasons.map(function(s){return d[coords[i]][time][s] || 0 })))
+        cms.push(math.median(seasons.map(function(s){return d[coords[i]][time][s] || 0 })))
       }
     }
     flatCms = [].concat.apply([],cms)
-    maxVal = math.max(flatCms)
-    minVal = math.min(flatCms)
-    this.scale.adjust(maxVal,minVal,measure)
-    colorRange = this.getColorRange(maxVal,minVal)
+    if(measure=='rank'){
+      ucms = cms.filter(function(item, i, ar){ return ar.indexOf(item) === i; });
+      ucms = ucms.sort(function(i,j){return(j-i)})
+      cms = cms.map(function(i){return ucms.indexOf(i)+1})
+    }
+
+    if(measure=='rank'){
+      maxVal = math.max(cms)
+      minVal = math.min(cms)
+      colorRange = this.getColorRange(minVal,maxVal)
+      canv.scale.adjust(minVal,maxVal,measureStr[measure])
+    }else{
+      maxVal = math.max(flatCms)
+      minVal = math.min(flatCms)
+      colorRange = this.getColorRange(maxVal,minVal)
+      canv.scale.adjust(maxVal,minVal,measureStr[measure])
+    }
     for(i=0;i<coords.length;i++){
       var div = $('#'+coords[i])
       div.css('background-color',colorRange(cms[i]))
       div.css('opacity','.8')
-      $('#'+coords[i]+' .detailtext').html('<span>'+math.round(cms[i],2).toString()+(measure=='mdp'?' ':' cm')+'</span>')
+      $('#'+coords[i]+' .detailtext').html('<span>'+math.round(cms[i],2).toString()+(measure=='median'?' cm':'')+'</span>')
     }
   },
   getColorRange : function(maxVal,minVal){
@@ -54,15 +67,15 @@ var canv = {
     	key.append("rect").attr("width", w - 100).attr("height", h - 100).style("fill", "url(#gradient)").attr("transform", "translate(0,10)");
     	var y = d3.scaleLinear().range([maxVal, 0]).domain([1, maxVal]);
     },
-    adjust : function(maxVal, minVal,measure){
+    adjust : function(maxVal, minVal,msstr){
       minVal = minVal ||0;
     	var key = d3.select("svg");
       d3.select('g').remove()
       d3.select('text').remove()
-    	var y = d3.scaleLinear().range([439, 0]).domain([0, maxVal]);
+    	var y = d3.scaleLinear().range([439, 0]).domain([minVal, maxVal]);
     	var yAxis = d3.axisRight().scale(y);
     	key.append("g").attr("class", "y axis").attr("transform", "translate(41,10)").call(yAxis)
-      key.append("text").attr("transform", "rotate(-90)").attr("y", 70).attr("x", -10).attr("dy", ".78em").style("text-anchor", "end").text(measure == 'mdp'?'MDP':"cm");
+      key.append("text").attr("transform", "rotate(-90)").attr("y", 70).attr("x", -10).attr("dy", ".78em").style("text-anchor", "end").text(msstr);
     }
   }
 };
@@ -151,6 +164,8 @@ var months = ['dec','jan','feb','mar','apr'];
 var cellSize = 20;
 var seasons = [2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016]
 
+var measureStr = {'median':'cm','mdp':'MDP','rank':'Rank'};
+
 var lowRGB = "rgb(190,250,230)"
 var highRGB = "rgb(0,50,160)"
 
@@ -179,14 +194,6 @@ for(i=0;i<coords.length;i++){
 var d = {};
 var d2 = {};
 var maxs = {};
-
-var funs = {
-  max : math.max,
-  min : math.min,
-  median : math.median,
-  mean : math.mean,
-  mdp : math.mean
-};
 
 d3.csv('monthlySums3.csv',function(data){
 

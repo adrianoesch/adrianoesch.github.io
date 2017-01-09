@@ -20,9 +20,10 @@
 <ul class="tab2">
   <li class="title" id='var'><strong>Measure:</strong></li>
   <!-- <li><a id='mean' class="measureTab" onclick="canv.tabs(event)">Mean</a></li> -->
-  <li><a id='median' class="measureTab active" onclick="canv.tabs(event)">Median*</a></li>
+  <li><a id='median' class="measureTab active" onclick="canv.tabs(event)">Median<sup>1</sup></a></li>
   <!-- <li><a id='max' class="measureTab" onclick="update(event)">Max</a></li> -->
-  <li><a id='mdp' class="measureTab" onclick="canv.tabs(event)">MDP**</a></li>
+  <li><a id='mdp' class="measureTab" onclick="canv.tabs(event)">MDP<sup>2</sup></a></li>
+  <li><a id='rank' class="measureTab" onclick="canv.tabs(event)">Rank<sup>3</sup></a></li>
 </ul>
 <div id="canvas">
 </div>
@@ -30,15 +31,16 @@
 </div>
   <div style="font-size:14px;float:left;position:relative;line-height:1.5;padding:0 50 0 50;">
     <p>
-      By clicking on an active square a histogram of the annual fresh snow sums for a given time period pops up.</br>
-      *Median: The median describes the "middle" amount of snow fall in a given time period over the past 15 years (<a target="_blank" style="text-decoration:underline;color:black;" href="https://en.wikipedia.org/wiki/Median">Wiki</a>).</br>
-      **MDP: "Major Dump Probability" describes the ratio of years with over 30cm snowfall within 48h in a given time period.
+      By clicking on an active square a histogram of the fresh snowfall over the past 15 years for a given time period pops up.</br>
+      <sup>1</sup>The median describes the "middle" amount of snowfall in a given time period (<a target="_blank" style="text-decoration:underline;color:black;" href="https://en.wikipedia.org/wiki/Median">Wiki</a>).</br>
+      <sup>2</sup>"Major Dump Probability" describes the ratio of years with over 30cm snowfall within 48h in a given time period.</br>
+      <sup>3</sup>This displays the rank of the median snowfall (1 is the most snowfall).
     </p>
 
     <h2 style='margin-top:60px;'>Caution</h2>
     <p>The data presented herein is based on the <a target="_blank" href="http://www.slf.ch/schneeinfo/schneekarten/hn1d/index_DE">daily snow reports</a> from the swiss avalanche institute (SLF). Because raw snow data is not available I first scraped the available archive of snow reports from the last 15 years in the form of 2'614 pictures. The pictures depict estimated fresh snow models from the last 24 hours, a service from SLF. Unfortunately pictures from different seasons had slightly different formats, so I had to detect the coordinates of the borders on the map with the help of <a href="http://docs.opencv.org/3.0-beta/modules/core/doc/intro.html" target="_blank">Open CV</a>.</p>
     <p> <div style="float:right;margin-left:20px;position:relative;font-size:12px;"><b>Categories in cm </b></br><img style="margin-top:-20px;" src="slf_categories.png" height="150" width="150"/></div>
-    The maps were then split into a grid of 34 x 22 squares, for which the most likely fresh snow category was defined via <a href="http://www.pyimagesearch.com/2014/07/14/3-ways-compare-histograms-using-opencv-python/" target="_blank">histogram correlation</a>. To sum up the daily fresh snow data for the months December to April, the average value of each range category was assumed (e.g. "1 - 10 cm" = 5 cm; "10 - 25 cm" = 17.5 cm), which leads to major inaccuracies. All code and data is available on <a href="https://github.com/adrianoesch/slf-data" target="_blank">Github</a>.</p>
+    The maps were then split into a grid of 34 x 22 squares, for which the most likely fresh snow category was defined via <a href="http://www.pyimagesearch.com/2014/07/14/3-ways-compare-histograms-using-opencv-python/" target="_blank">histogram correlation</a>. To sum up the daily fresh snow data for the months December to April, the average value of each range category was assumed (e.g. "1-10cm" = 5 cm; "10-25cm" = 17.5 cm), which leads to major inaccuracies. A major dump (more than 30cm of snowfall within 48h) could therefore be due to a single "25-50cm" snow report (average is 37.5), or two successive "10-25cm" reports. All code and data is available on <a href="https://github.com/adrianoesch/slf-data" target="_blank">Github</a>.</p>
     <p>This was a leisure project, so don't hold me accountable for errors and bugs ;) </p>
 
     <h3 style='margin-top:40px;'>PS:</h3>
