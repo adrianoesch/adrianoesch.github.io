@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
     <Document id="feat_1586">
-        <Style id="stylesel_790">
-            <IconStyle id="substyle_790">
-                <color>0f6bff</color>
-                <colorMode>normal</colorMode>
-                <scale>1</scale>
-                <heading>0</heading>
-                <Icon id="link_790">
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
-                </Icon>
-            </IconStyle>
-        </Style>
+      <name>Alpi Ticinesi</name>
         <Placemark id="feat_1587">
             <description>
 <![CDATA[<b>Hütte: </b><a href=https://alpi-ticinesi.ch/ticino/capanne/capanne_show.php?id=1 target="_blank">Adula CAS</a><br><br><b>Bewartung: </b>Juni bis September<br><b>Öffnung: </b>immer offen<br><b>Bemerkung: </b>]]>            </description>
@@ -354,14 +344,6 @@
             <styleUrl>#stylesel_790</styleUrl>
             <Point id="geom_1622">
                 <coordinates>9.0303296366,46.3574482198,0.0</coordinates>
-            </Point>
-        </Placemark>
-        <Placemark id="feat_1630">
-            <description>
-<![CDATA[<b>Hütte: </b><a href=https://alpi-ticinesi.ch/ticino/capanne/capanne_show.php?id=45 target="_blank">Ceddullo</a><br><br><b>Bewartung: </b>Mai bis Oktober<br><b>Öffnung: </b>Mai bis Oktober<br><b>Bemerkung: </b>]]>            </description>
-            <styleUrl>#stylesel_790</styleUrl>
-            <Point id="geom_1623">
-                <coordinates>8.83713309711,46.9190665616,0.0</coordinates>
             </Point>
         </Placemark>
         <Placemark id="feat_1631">
