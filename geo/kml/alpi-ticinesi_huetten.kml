@@ -5,7 +5,7 @@
         <Placemark id="feat_1587">
             <description>
 <![CDATA[<b>Hütte: </b><a href=https://alpi-ticinesi.ch/ticino/capanne/capanne_show.php?id=1 target="_blank">Adula CAS</a><br><br><b>Bewartung: </b>Juni bis September<br><b>Öffnung: </b>immer offen<br><b>Bemerkung: </b>]]>            </description>
-            <Point id="geom_1580">
+              <Point id="geom_1580">
                 <coordinates>8.99579543884,46.4990969432,0.0</coordinates>
             </Point>
         </Placemark>
