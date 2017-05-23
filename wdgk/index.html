@@ -1,0 +1,25 @@
+<html>
+<head>
+  <script src="./libs/math.min.js"></script>
+  <script src="./libs/jszip.min.js"></script>
+  <script src="./libs/jquery.min.js"></script>
+  <script src="./libs/d3.min.js"></script>
+  <script src="./libs/plotly.min.js"></script>
+  <script src="./script.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div id="container">
+  <h1>What Does Google Know</h1>
+  <p>WDGK reads your <a href="https://takeout.google.com/settings/takeout" target="_blank">Google Takeout</a> file and shows some results from analyses of your personal data.
+    All this is happening locally on your computer. Therefore, full privacy is guaranteed. So far, there's only support for
+    the browser data (only select Chrome in Takeout).</p>
+  <div style="margin-bottom:80px;"><center><p><input type="file" id="takeout" onchange="inputChange()" ></p></center></div>
+  <div id="results"></div>
+  <div id="footer" style="visibility:hidden;">
+    <center><p>Add your own analysis on <a href="https://github.com/adrianoesch/wdgk/" target="_blank">
+      Github</a>.</p></center>
+  </div>
+</div>
+</body>
+</html>

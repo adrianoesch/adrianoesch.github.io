@@ -1,0 +1,25 @@
+body{
+  font-family: "Arial";
+  font-size:15px;
+  line-height:20px;
+  background: rgb(230,230,230);
+  color: rgb(40,40,40);
+  background: -moz-linear-gradient(top, rgb(230,230,230),  rgb(150,150,150) );
+  background: -webkit-linear-gradient(top, rgb(230,230,230),  rgb(150,150,150) );
+}
+a {
+  color: rgb(40,40,40);
+}
+#container{
+  background-color: white;
+  border-radius: 20px;
+  padding:70px;
+  width: 700px;
+  height: 1260px;
+  margin: 50px auto;
+}
+.plots{
+  margin: 50px 30px;
+  width: 600px;
+  height: 400px;
+}
