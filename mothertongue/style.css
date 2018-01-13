@@ -1,0 +1,132 @@
+.left{
+  position: fixed;
+  width:100%;
+  height:100%;
+  top:0px;
+  left:0px;
+}
+.right{
+  position:fixed;
+  width:50%;
+  height:100%;
+  top:0px;
+  left:50%;
+  background-color: rgba(255,255,255,0.8);
+  transition: left ease .7s;
+}
+.right.container{
+  position: relative;
+  left:0px;
+  padding:50px;
+  width:auto;
+  overflow-y:scroll;
+  background: none;
+  transition: none;
+}
+.right.shifted {
+    left: 100%;
+    margin-left: -50px;
+}
+.logo.outer{
+  background-color:rgba(255, 255, 255, 0.5);
+  width:auto;
+  border-radius:10px;
+}
+.logo{
+  position:absolute;
+  top:0px;
+  left:0px;
+  margin-left:40px;
+  margin-top:40px;
+  padding:20 30 0 30px;
+  height:100px;
+  width:50%;
+  font-size: 65px;
+  font-weight: light;
+  font-family: 'futura';
+  z-index: 100;
+  color: rgb(255, 255, 255);
+}
+.logo.inner{
+  margin: -4px;
+  /* color: rgb(255, 255, 255); */
+/*   color: rgb(255, 205, 189); */
+  color: rgb(230, 152, 147);
+  z-index: 101;
+}
+.logo.inner2{
+  margin: -8px;
+  color: rgb(199, 80, 73);
+  /* color: rgba(255, 205, 189, 1); */
+  z-index: 102;
+}
+.right.logo{
+  visibility: hidden;
+  background-color: none;
+}
+.post h1{
+  font-family: 'futura';
+  font-weight: ;
+}
+.post p{
+  font-family: 'helvetica';
+  font-size: 15px;
+  line-height: 1.4;
+}
+.post.from{
+  font-style: italic;
+}
+.post.container{
+  padding-bottom: 200px;
+}
+
+@media (max-width:1100px){
+  .left.logo{
+      font-size:50px;
+      height:80px;
+  }
+}
+
+@media (max-width:935px){
+  .right, .left, .container {
+    width : 100%;
+    left : 0px;
+  }
+  .right .container {
+    padding-left:10%;
+  }
+  .post.container{
+    margin-top: 50px;
+    padding: 0px;
+  }
+  .left.logo{
+    visibility: hidden;
+  }
+  .right.logo{
+    visibility: visible;
+    background-color: transparent;
+    padding: 0px;
+  }
+  .right.logo.outer{
+    margin-left: 10px;
+    position: relative;
+  }
+}
+@media (max-width:530px){
+  .logo{
+      font-size:50px;
+      /* height:80px; */
+  }
+}
+
+@media (max-width:400px){
+  .post p{
+      font-size: 13px;
+  }
+  .logo{
+      font-size: 45px;
+  }
+  .right.container{
+    padding:5%;
+  }
+}
