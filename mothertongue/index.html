@@ -61,11 +61,11 @@ gestureZone.addEventListener('touchend', function(event) {
 
 function handleGesture() {
 
-    if (touchendX <= touchstartX+20) {
+    if (touchendX+60 <= touchstartX) {
         shift()
     }
 
-    if (touchendX+20 >= touchstartX) {
+    if (touchendX >= touchstartX+60) {
         shift()
     }
 
