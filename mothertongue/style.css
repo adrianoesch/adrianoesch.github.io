@@ -1,3 +1,4 @@
+/* main structure */
 .left{
   position: fixed;
   width:100%;
@@ -27,10 +28,18 @@
     left: 100%;
     margin-left: -50px;
 }
+
+/* left logo */
+.overlay{
+  position:relative;
+  cursor:pointer;
+}
 .logo.outer{
+  position: relative;
   background-color:rgba(255, 255, 255, 0.5);
-  width:auto;
+  width:6.5em;
   border-radius:10px;
+  margin-bottom: 3px;
 }
 .logo{
   position:absolute;
@@ -42,8 +51,7 @@
   height:100px;
   width:50%;
   font-size: 65px;
-  font-weight: light;
-  font-family: 'futura';
+  font-family: Futura,Trebuchet MS,Arial,sans-serif;
   z-index: 100;
   color: rgb(255, 255, 255);
 }
@@ -60,13 +68,60 @@
   /* color: rgba(255, 205, 189, 1); */
   z-index: 102;
 }
+.left.navigation.container{
+  position: relative;
+  background: transparent:
+}
+/* navigation */
+.navigation.item{
+  margin-left:40px;
+  border-radius: 10px;
+  position: relative;
+  margin-bottom: 5px;
+  width:100px;
+  height:2.5em;
+  background-color:rgba(255, 255, 255, 0.5);
+  padding:20 30 0 30px;
+  z-index: 101;
+  transition: all ease 0.5s;
+}
+.navigation.item{
+  margin-left:40px;
+  border-radius: 10px;
+  position: relative;
+  margin-bottom: 5px;
+  width:6em;
+  height:2.5em;
+  background-color:rgba(255, 255, 255, 0.5);
+  padding:16 30 0 30px;
+  z-index: 101;
+  transition: all ease 0.5s;
+}
+.left.navigation:hover,.left.logo.outer:hover{
+  background-color:rgba(255, 255, 255, 0.8);
+}
+.navigation.item p{
+  font-weight: bold;
+  font-size:20px;
+  margin-top:0px;
+  font-family: Futura,Trebuchet MS,Arial,sans-serif;
+  color: rgb(199, 80, 73);
+  text-align: center;
+}
+.right.navigation.container{
+  visibility: hidden;
+  height:0px;
+}
+.hidden{
+  opacity:0;
+}
+/* right elements */
 .right.logo{
   visibility: hidden;
   background-color: none;
 }
 .post h1{
-  font-family: 'futura';
-  font-weight: ;
+  font-family: Futura,Trebuchet MS,Arial,sans-serif;
 }
 .post p{
   font-family: 'helvetica';
@@ -79,8 +134,8 @@
 .post.container{
   padding-bottom: 200px;
 }
-
-@media (max-width:1100px){
+/* mobile */
+@media (max-width:1200px){
   .left.logo{
       font-size:50px;
       height:80px;
@@ -102,35 +157,86 @@
   .left.logo{
     visibility: hidden;
   }
+  .left.navigation{
+    visibility: hidden;
+  }
   .right.logo{
     visibility: visible;
     background-color: transparent;
     padding: 0px;
   }
+  .right.logo{
+    visibility:visible;
+  }
   .right.logo.outer{
     margin-left: 10px;
     position: relative;
   }
+  .right.navigation.container{
+    visibility:visible;
+    height: auto;
+  }
+  .right.navigation.container{
+    width:100%;
+    left: 50%;
+    margin-left: -212px;
+    padding:0em;
+  }
+  .right.navigation.item{
+    width:auto;
+    float:left;
+    display: block inline;
+    margin:4px;
+    padding:1em 1.5em 0em 1.5em;
+    background-color: rgba(199, 80, 73, 0.12);
+    cursor: pointer;
+  }
+  .right.navigation.item:hover{
+    background-color: rgba(199, 80, 73, 0.24);
+  }
 }
 @media (max-width:530px){
   .logo{
-      font-size:50px;
-      /* height:80px; */
+    font-size:50px;
+    /* height:80px; */
+  }
+  .right.navigation.container{
+    margin-left: -160px;
+  }
+  .right.logo{
+    height:auto;
+  }
+  .right.navigation.item{
+    height:auto;
+  }
+  .right.navigation.item p{
+    font-size: 13px;
   }
 }
 
 @media (max-width:440px){
+  .right.navigation.container{
+    left:0px;
+    margin-left:0px
+  }
   .post p{
-      font-size: 13px;
+    font-size: 13px;
   }
   .logo{
-      font-size: 45px;
+    font-size: 43px;
   }
   .right.container{
     padding:30px;
   }
   .right.shifted {
-      left: 100%;
-      margin-left: -30px;
+    left: 100%;
+    margin-left: -30px;
+  }
+  .right.navigation.item p{
+    font-size: 13px;
+  }
+  .right.navigation.item{
+    margin: 2px;
+    padding:12px 18px 0px 18px;
   }
 }
