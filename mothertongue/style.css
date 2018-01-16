@@ -19,11 +19,12 @@
   top:0px;
   left:50%;
   background-color: rgba(255,255,255,0.8);
-  transition: left ease .7s;
+  transition: all ease .9s;
 }
 .right.container{
-  position: relative;
+  position: absolute;
   left:0px;
+  top:0px;
   padding:50px;
   width:auto;
   overflow-y:scroll;
@@ -115,6 +116,7 @@
   text-align: center;
 }
 .right.navigation.container{
+  position: relative;
   visibility: hidden;
   height:0px;
 }
@@ -140,6 +142,33 @@
 .post.container{
   padding-bottom: 200px;
 }
+.right.shiftsignal.container{
+  position: relative;
+  background-color:transparent;
+  text-align: center;
+  margin: 0px;
+  width:40px;
+  height:60px;
+  font-size: 50px;
+  padding:0px;
+  cursor: pointer;
+  z-index: 110;
+}
+.shiftsignal{
+  padding:0px;
+  margin-left: 5px;
+  margin-top: 10px;
+  position: relative;
+  font-family: 'Futura';
+  background-color:transparent;
+  color: rgb(199, 80, 73);
+  transform: scaleX(1) scaleY(1.2);
+  transition: transform ease 1.5s;
+}
+.shiftsignal.shifted{
+  margin-left: 0px;
+  transform: scaleX(-1) scaleY(1.2);
+}
 /* mobile */
 @media (max-width:1200px){
   .left.logo{
@@ -159,6 +188,21 @@
   .post.container{
     margin-top: 50px;
     padding: 0px;
+  }
+  .right.shiftsignal.container{
+    height:10vw;
+    width:6vw;
+  }
+  .shiftsignal{
+    margin-left: 2vw;
+    margin-top: 2vw;
+    width:auto;
+    height:auto;
+    font-size: 8vw;
+  }
+  .shiftsignal.shifted{
+    margin-left: 0vw;
+    margin-top: 2vw;
   }
   .left.logo{
     visibility: hidden;
