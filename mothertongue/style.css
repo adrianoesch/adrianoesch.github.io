@@ -62,14 +62,14 @@
   color: rgb(255, 255, 255);
 }
 .logo.inner{
-  margin: -4px;
+  margin: -3px;
   /* color: rgb(255, 255, 255); */
 /*   color: rgb(255, 205, 189); */
   color: rgb(230, 152, 147);
   z-index: 101;
 }
 .logo.inner2{
-  margin: -8px;
+  margin: -6px;
   color: rgb(199, 80, 73);
   /* color: rgba(255, 205, 189, 1); */
   z-index: 102;
@@ -109,7 +109,7 @@
 .navigation.item p{
   font-weight: bold;
   font-size:20px;
-  margin-top:0px;
+  margin:0px;
   font-family: Futura,Trebuchet MS,Arial,sans-serif;
   color: rgb(199, 80, 73);
   text-align: center;
@@ -178,6 +178,12 @@
     margin-left: 10px;
     position: relative;
   }
+  .right.logo.inner{
+    margin: -0.5vw;
+  }
+  .right.logo.inner2{
+    margin: -1vw;
+  }
   .right.navigation.container{
     visibility:visible;
     height: auto;
@@ -193,43 +199,41 @@
     float:left;
     display: block inline;
     margin:4px;
-    padding:1em 1.5em 0em 1.5em;
+    padding:0.8em 1.5em;
     background-color: rgba(199, 80, 73, 0.12);
     cursor: pointer;
+    font-size:19px;
+    height:auto;
   }
   .right.navigation.item:hover{
     background-color: rgba(199, 80, 73, 0.24);
   }
 }
-@media (max-width:530px){
+@media (max-width:540px){
   .logo{
-    font-size:50px;
-    /* height:80px; */
-  }
+      font-size: 11vw;
+    }
   .right.navigation.container{
-    margin-left: -160px;
+    /* left:50%; */
+    margin-left:-37vw;
   }
   .right.logo{
     height:auto;
   }
   .right.navigation.item{
+    margin: 0.8vw;
+    padding:1.8vw 3.7vw 1.8vw 3.7vw;
+    border-radius:2vw;
     height:auto;
   }
   .right.navigation.item p{
-    font-size: 13px;
+    font-size: 4vw;
   }
 }
 
 @media (max-width:440px){
-  .right.navigation.container{
-    left:0px;
-    margin-left:0px
-  }
   .post p{
     font-size: 13px;
-  }
-  .logo{
-    font-size: 43px;
   }
   .right.container{
     padding:30px;
@@ -237,12 +241,5 @@
   .right.shifted {
     left: 100%;
     margin-left: -30px;
-  }
-  .right.navigation.item p{
-    font-size: 13px;
-  }
-  .right.navigation.item{
-    margin: 2px;
-    padding:12px 18px 0px 18px;
   }
 }
