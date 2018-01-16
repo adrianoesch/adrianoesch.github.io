@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Futura';
+  src: url('font/futura-Medium.woff2') format('woff2'), /* Super Modern Browsers */
+       url('font/futura-Medium.woff') format('woff'), /* Pretty Modern Browsers */
+       url('font/futura-Medium.ttf') format('truetype') /* Safari, Android, iOS */
+}
 /* main structure */
 .left{
   position: fixed;
