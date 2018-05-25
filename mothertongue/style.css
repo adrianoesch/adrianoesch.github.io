@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Futura';
+  src: url('font/Futura-Medium.woff2') format('woff2'), /* Super Modern Browsers */
+       url('font/Futura-Medium.woff') format('woff'), /* Pretty Modern Browsers */
+       url('font/Futura-Medium.ttf') format('truetype') /* Safari, Android, iOS */
+}
 /* main structure */
 .left{
   position: fixed;
@@ -13,13 +19,16 @@
   top:0px;
   left:50%;
   background-color: rgba(255,255,255,0.8);
-  transition: left ease .7s;
+  transition: all ease .9s;
 }
 .right.container{
-  position: relative;
+  position: absolute;
   left:0px;
-  padding:50px;
-  width:auto;
+  top:0px;
+  /* width:100%; */
+  margin-left: 50px;
+  /* margin-right: 50px; */
+  width: auto;
   overflow-y:scroll;
   background: none;
   transition: none;
@@ -56,14 +65,14 @@
   color: rgb(255, 255, 255);
 }
 .logo.inner{
-  margin: -4px;
+  margin: -3px;
   /* color: rgb(255, 255, 255); */
 /*   color: rgb(255, 205, 189); */
   color: rgb(230, 152, 147);
   z-index: 101;
 }
 .logo.inner2{
-  margin: -8px;
+  margin: -6px;
   color: rgb(199, 80, 73);
   /* color: rgba(255, 205, 189, 1); */
   z-index: 102;
@@ -103,12 +112,13 @@
 .navigation.item p{
   font-weight: bold;
   font-size:20px;
-  margin-top:0px;
+  margin:0px;
   font-family: Futura,Trebuchet MS,Arial,sans-serif;
   color: rgb(199, 80, 73);
   text-align: center;
 }
 .right.navigation.container{
+  position: relative;
   visibility: hidden;
   height:0px;
 }
@@ -132,7 +142,38 @@
   font-style: italic;
 }
 .post.container{
+  padding-top: 100px;
   padding-bottom: 200px;
+  /* margin-left: 50px; */
+  margin-right: 50px;
+  width: auto;
+}
+.right.shiftsignal.container{
+  position: relative;
+  background-color:transparent;
+  text-align: center;
+  margin: 0px;
+  width:40px;
+  height:60px;
+  font-size: 50px;
+  padding:0px;
+  cursor: pointer;
+  z-index: 110;
+}
+.shiftsignal{
+  padding:0px;
+  margin-left: 5px;
+  margin-top: 10px;
+  position: relative;
+  font-family: 'Futura';
+  background-color:transparent;
+  color: rgb(199, 80, 73);
+  transform: scaleX(1) scaleY(1.2);
+  transition: transform ease 1.5s;
+}
+.shiftsignal.shifted{
+  margin-left: 0px;
+  transform: scaleX(-1) scaleY(1.2);
 }
 /* mobile */
 @media (max-width:1200px){
@@ -142,17 +183,32 @@
   }
 }
 
-@media (max-width:935px){
+@media (max-width:800px){
   .right, .left, .container {
     width : 100%;
     left : 0px;
   }
   .right .container {
-    padding-left:10%;
+    /* padding-left:10%; */
   }
   .post.container{
     margin-top: 50px;
     padding: 0px;
+  }
+  .right.shiftsignal.container{
+    height:10vw;
+    width:7vw;
+  }
+  .shiftsignal{
+    margin-left: 0vw;
+    margin-top: 2vw;
+    width:auto;
+    height:auto;
+    font-size: 8vw;
+  }
+  .shiftsignal.shifted{
+    margin-left: 0vw;
+    margin-top: 2vw;
   }
   .left.logo{
     visibility: hidden;
@@ -172,71 +228,68 @@
     margin-left: 10px;
     position: relative;
   }
+  .right.logo.inner{
+    margin: -0.5vw;
+  }
+  .right.logo.inner2{
+    margin: -1vw;
+  }
   .right.navigation.container{
     visibility:visible;
     height: auto;
   }
   .right.navigation.container{
-    width:100%;
+    width: 28em;
     left: 50%;
-    margin-left: -212px;
-    padding:0em;
+    margin-left: -15em;
+    padding: 0em;
   }
   .right.navigation.item{
     width:auto;
     float:left;
     display: block inline;
     margin:4px;
-    padding:1em 1.5em 0em 1.5em;
+    padding:0.8em 1.5em;
     background-color: rgba(199, 80, 73, 0.12);
     cursor: pointer;
+    font-size:19px;
+    height:auto;
   }
   .right.navigation.item:hover{
     background-color: rgba(199, 80, 73, 0.24);
   }
 }
-@media (max-width:530px){
+@media (max-width:540px){
   .logo{
-    font-size:50px;
-    /* height:80px; */
-  }
+      font-size: 11vw;
+    }
   .right.navigation.container{
-    margin-left: -160px;
+    /* left:50%; */
+    margin-left:-39vw;
   }
   .right.logo{
     height:auto;
   }
   .right.navigation.item{
+    margin: 0.8vw;
+    padding:1.8vw 3.7vw 1.8vw 3.7vw;
+    border-radius:2vw;
     height:auto;
   }
   .right.navigation.item p{
-    font-size: 13px;
+    font-size: 4vw;
   }
 }
 
 @media (max-width:440px){
-  .right.navigation.container{
-    left:0px;
-    margin-left:0px
-  }
   .post p{
     font-size: 13px;
   }
-  .logo{
-    font-size: 43px;
-  }
   .right.container{
-    padding:30px;
+    margin-left: 30px
   }
   .right.shifted {
     left: 100%;
     margin-left: -30px;
-  }
-  .right.navigation.item p{
-    font-size: 13px;
-  }
-  .right.navigation.item{
-    margin: 2px;
-    padding:12px 18px 0px 18px;
   }
 }

@@ -18,6 +18,7 @@
     <div class='left map' id='mapid'></div>
   </div>
   <div class='right' ondblclick="shift(event)">
+  <div class='right shiftsignal container' onclick="shift(event)"><div class='shiftsignal'>></div></div>
     <div class='right container'>
         <div class='right navigation container'>
         <div class='right logo outer'>MotherTongue<div class='right logo inner'>MotherTongue</div><div class='right logo inner2'>MotherTongue</div></div>
@@ -45,11 +46,14 @@ var map = L.map('mapid',{
 L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png').addTo(map);
 
 function shift(e){
-  var classList = document.getElementsByClassName('right')[0].classList
-  if(classList.contains('shifted')){
-    classList.remove('shifted')
+  var el1 = document.querySelectorAll('.right')[0].classList
+  var el2 = document.querySelectorAll('.shiftsignal')[1].classList
+  if(el1.contains('shifted')){
+    el1.remove('shifted')
+    el2.remove('shifted')
   }else{
-    classList.add('shifted')
+    el1.add('shifted')
+    el2.add('shifted')
   }
 }
 
@@ -89,6 +93,7 @@ function navigationHover(){
     }
   }
 }
+
 document.querySelectorAll('.left.logo')[0].addEventListener('mouseenter',navigationHover)
 document.querySelectorAll('.left.logo')[0].addEventListener('mouseleave',navigationHover)
 document.querySelectorAll('.left.navigation.container')[0].addEventListener('mouseenter',navigationHover)
