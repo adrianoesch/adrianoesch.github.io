@@ -1,0 +1,66 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href='style.css'></link>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+  <div class='left map' id='mapid'></div>
+</body>
+<script>
+function turPopup(tur){
+    return("<div><a target='_bank' href='"+tur.href+"'>"+tur.name+"</a></div>")
+};
+
+function hyttaPopup(tur){
+    return("<div><a target='_bank' href='"+tur.href+"'>"+tur.name+" ("+tur.type+")</a></div>")
+};
+
+function addTur(tur){
+  L.polyline( tur.points, {
+    weight:2,
+    color:'rgb(0, 140, 255)',
+  }).bindPopup(turPopup(tur)).on('mouseover', function (e) {
+    e.target.setStyle({
+      weight:4,
+      color:'rgb(2, 119, 215)',
+    });
+  }).on('mouseout', function (e) {
+    e.target.setStyle({
+      weight:2,
+      color:'rgb(0, 140, 255)',
+    })
+  }).addTo(map)
+};
+
+var oldOptions = L.Icon.Default.prototype.options
+L.Icon.Default.prototype.options.iconSize = [oldOptions.iconSize[0]/2.0 ,oldOptions.iconSize[1]/2.0] ;
+L.Icon.Default.prototype.options.iconAnchor = [oldOptions.iconAnchor[0]/2.0 ,oldOptions.iconAnchor[1]/2.0] ;
+L.Icon.Default.prototype.options.shadowSize = [0,0] ;
+
+function addHytta(hytta){
+    L.marker( hytta.points,{
+      weight:3,
+      color:'rgb(162, 0, 0)'
+    }).bindPopup(hyttaPopup(hytta)).addTo(map)
+}
+
+// init
+var map = L.map('mapid',{
+  'zoomControl':false
+}).setView([62.5942, 9.6912], 10);
+L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}').addTo(map);
+
+$.ajax({
+  url:'./ut_data.json',
+  method:'get',
+  success:function(data){
+    data['turer'].map(addTur)
+    data['hytter'].map(addHytta)
+  }
+})
+
+</script>
+</html>
