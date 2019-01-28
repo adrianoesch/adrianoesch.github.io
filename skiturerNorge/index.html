@@ -1,6 +1,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skiturer i Norge</title>
   <link rel="stylesheet" type="text/css" href='style.css'></link>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
@@ -11,6 +12,7 @@
   <div class='left map' id='mapid'></div>
 </body>
 <script>
+// helper functions
 function turPopup(tur){
     return("<div><a target='_bank' href='"+tur.href+"'>"+tur.name+"</a></div>")
 };
@@ -36,11 +38,6 @@ function addTur(tur){
   }).addTo(map)
 };
 
-var oldOptions = L.Icon.Default.prototype.options
-L.Icon.Default.prototype.options.iconSize = [oldOptions.iconSize[0]/2.0 ,oldOptions.iconSize[1]/2.0] ;
-L.Icon.Default.prototype.options.iconAnchor = [oldOptions.iconAnchor[0]/2.0 ,oldOptions.iconAnchor[1]/2.0] ;
-L.Icon.Default.prototype.options.shadowSize = [0,0] ;
-
 function addHytta(hytta){
     L.marker( hytta.points,{
       weight:3,
@@ -48,11 +45,17 @@ function addHytta(hytta){
     }).bindPopup(hyttaPopup(hytta)).addTo(map)
 }
 
-// init
-var map = L.map('mapid',{
-  'zoomControl':false
-})
+var oldOptions = L.Icon.Default.prototype.options
+L.Icon.Default.prototype.options.iconSize = [oldOptions.iconSize[0]/2.0 ,oldOptions.iconSize[1]/2.0] ;
+L.Icon.Default.prototype.options.iconAnchor = [oldOptions.iconAnchor[0]/2.0 ,oldOptions.iconAnchor[1]/2.0] ;
+L.Icon.Default.prototype.options.shadowSize = [0,0] ;
 
+// init
+var map = L.map('mapid',{'zoomControl':false})
+var zoom = L.control.zoom({'position':'topright'}).addTo(map)
+var scale = L.control.scale({'imperial':false}).addTo(map)
+
+// tiles
 var baseLayer = L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',{
   attribution: '<a href="http://www.statkart.no">Statkart</a>'
 }).addTo(map);
@@ -64,6 +67,7 @@ var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapSer
   opacity:0.5
 }).addTo(map);
 
+// load data
 $.ajax({
   url:'./ut_data.json',
   method:'get',
