@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- <script src="./leaflet.offline.min.js"></script> -->
 </head>
 <body>
   <div class='left map' id='mapid'></div>
@@ -51,7 +52,17 @@ function addHytta(hytta){
 var map = L.map('mapid',{
   'zoomControl':false
 }).setView([62.5942, 9.6912], 10);
-L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}').addTo(map);
+
+var baseLayer = L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',{
+  attribution: '<a href="http://www.statkart.no">Statkart</a>'
+}).addTo(map);
+var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
+  attribution: '<a href="https://gis3.nve.no/map/rest/services/Bratthet/MapServer">NVE</a>',
+  layers: 'Bratthet_snoskred',
+  transparent: true,
+  format:'png',
+  opacity:0.5
+}).addTo(map);
 
 $.ajax({
   url:'./ut_data.json',
