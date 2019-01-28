@@ -51,7 +51,7 @@ function addHytta(hytta){
 // init
 var map = L.map('mapid',{
   'zoomControl':false
-}).setView([62.5942, 9.6912], 10);
+})
 
 var baseLayer = L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',{
   attribution: '<a href="http://www.statkart.no">Statkart</a>'
@@ -72,6 +72,15 @@ $.ajax({
     data['hytter'].map(addHytta)
   }
 })
+
+// set location
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(position){
+    map.setView([position.coords.latitude, position.coords.longitude], 10);
+  });
+} else {
+  map.setView([62.5942, 9.6912], 10);
+}
 
 </script>
 </html>
