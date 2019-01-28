@@ -45,12 +45,13 @@ function addHytta(hytta){
     }).bindPopup(hyttaPopup(hytta)).addTo(map)
 }
 
+// change defaults
 var oldOptions = L.Icon.Default.prototype.options
 L.Icon.Default.prototype.options.iconSize = [oldOptions.iconSize[0]/2.0 ,oldOptions.iconSize[1]/2.0] ;
 L.Icon.Default.prototype.options.iconAnchor = [oldOptions.iconAnchor[0]/2.0 ,oldOptions.iconAnchor[1]/2.0] ;
 L.Icon.Default.prototype.options.shadowSize = [0,0] ;
 
-// init
+// init map
 var map = L.map('mapid',{'zoomControl':false})
 var zoom = L.control.zoom({'position':'topright'}).addTo(map)
 var scale = L.control.scale({'imperial':false}).addTo(map)
@@ -86,5 +87,9 @@ if (navigator.geolocation) {
   map.setView([62.5942, 9.6912], 10);
 }
 
+// roadmap:
+// - offline feature
+// - gps position marker
+// - more tracks/sources
 </script>
 </html>
