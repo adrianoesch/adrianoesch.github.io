@@ -2,13 +2,80 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skiturer i Norge</title>
-  <link rel="stylesheet" type="text/css" href='style.css'></link>
+  <!-- main libs -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <!-- <script src="./leaflet.offline.min.js"></script> -->
+  <!-- leaflet search plugin-->
+  <script src="./libs/leaflet-search/js/leaflet-gplaces-autocomplete.js"></script>
+  <link rel="stylesheet" href="./libs/leaflet-search/css/leaflet-gplaces-autocomplete.css" />
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQT5f94LsmFh2O4dn_HlQe0pQQMoUWUmM&libraries=places"></script>
+  <!-- leaflet gps plugin -->
+  <link rel="stylesheet" href="./libs/leaflet-gps/leaflet-gps.min.css" />
+  <script src="./libs/leaflet-gps/leaflet-gps.min.js"></script>
+
+  <!-- leaflet offline plugin -->
+  <!-- <script src="./libs/leaflet.offline.min.js"></script> -->
+  <!-- <link rel="stylesheet" href="/libs/leaflet.css" /> -->
+  <!-- <script src="./libs/leaflet.js"></script> -->
+  <!-- <script src="./libs/jquery.min.js"></script> -->
+  <link rel="stylesheet" type="text/css" href='style.css'></link>
 </head>
+<style>
+h1,p{
+  font-family: 'helvetica';
+}
+#title h1{
+  margin-bottom: 2px;
+  margin-top:13px;
+  padding-left: 105px;
+}
+#title p{
+  margin-top: 0px;
+  padding-left: 105px;
+}
+#header{
+  padding: 15px;
+  position: absolute;
+  z-index: 10;
+  width: 380px;
+  height:76px;
+  float: left;
+  background: rgba(255,255,255,0.5);
+  color: rgba(45, 71, 147,1);
+  opacity:0;
+  transition: 0.5s;
+  border-radius: 12px;
+}
+#header:hover{
+  opacity: 1;
+}
+#logo{
+  position: absolute;
+  z-index: 11;
+  top: 30;
+  left: 30;
+}
+#logo{
+  float:left;
+}
+</style>
 <body>
+  <svg id="logo" height='100' width='100' style="opacity:1;">
+    <defs>
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:rgb(219, 230, 255);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:rgb(20, 64, 193);stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <polygon points="0,69.3  40,0 80,69.3" style="fill:url(#grad1);" />
+  </svg>
+  <div id='header'>
+    <div id='title'>
+      <h1>Skiturer i Norge</h1>
+      <p>en rute aggregator</p>
+    </div>
+  </div>
   <div class='left map' id='mapid'></div>
 </body>
 <script>
@@ -53,13 +120,14 @@ L.Icon.Default.prototype.options.shadowSize = [0,0] ;
 
 // init map
 var map = L.map('mapid',{'zoomControl':false})
-var zoom = L.control.zoom({'position':'topright'}).addTo(map)
+var zoom = L.control.zoom({'position':'bottomright'}).addTo(map)
 var scale = L.control.scale({'imperial':false}).addTo(map)
 
 // tiles
-var baseLayer = L.tileLayer('http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',{
+var baseLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',{
   attribution: '<a href="http://www.statkart.no">Statkart</a>'
 }).addTo(map);
+
 var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
   attribution: '<a href="https://gis3.nve.no/map/rest/services/Bratthet/MapServer">NVE</a>',
   layers: 'Bratthet_snoskred',
@@ -67,6 +135,19 @@ var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapSer
   format:'png',
   opacity:0.5
 }).addTo(map);
+
+// search
+new L.Control.GPlaceAutocomplete({
+          callback: function(place){
+              console.log(place)
+              var loc = place.geometry.location;
+              map.setView([loc.lat(), loc.lng()],14);
+          },
+          collapsed_mode:true
+      }).addTo(map);
+
+// gps
+map.addControl( new L.Control.Gps({position:'topright'}) );
 
 // load data
 $.ajax({
@@ -80,6 +161,7 @@ $.ajax({
 
 // set location
 if (navigator.geolocation) {
+  map.setView([62.5942, 9.6912], 10);
   navigator.geolocation.getCurrentPosition(function(position){
     map.setView([position.coords.latitude, position.coords.longitude], 10);
   });
