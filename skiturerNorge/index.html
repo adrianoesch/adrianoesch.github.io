@@ -34,6 +34,7 @@ h1,p{
   margin-top: 0px;
   padding-left: 105px;
 }
+
 #header{
   padding: 15px;
   position: absolute;
@@ -41,36 +42,36 @@ h1,p{
   width: 380px;
   height:76px;
   float: left;
-  background: rgba(255,255,255,0.5);
-  color: rgba(45, 71, 147,1);
-  opacity:0;
+  background: rgba(255,255,255,0);
+  color: rgba(45, 71, 147,0);
   transition: 0.5s;
   border-radius: 12px;
 }
 #header:hover{
-  opacity: 1;
+  background: rgba(255,255,255,0.5);
+  color: rgba(45, 71, 147,1);
 }
 #logo{
   position: absolute;
   z-index: 11;
-  top: 30;
-  left: 30;
+  /* top: 30;
+  left: 30; */
 }
 #logo{
   float:left;
 }
 </style>
 <body>
-  <svg id="logo" height='100' width='100' style="opacity:1;">
-    <defs>
-      <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" style="stop-color:rgb(219, 230, 255);stop-opacity:1" />
-        <stop offset="100%" style="stop-color:rgb(20, 64, 193);stop-opacity:1" />
-      </linearGradient>
-    </defs>
-    <polygon points="0,69.3  40,0 80,69.3" style="fill:url(#grad1);" />
-  </svg>
   <div id='header'>
+    <svg id="logo" height='100' width='100' style="opacity:1;">
+      <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:rgb(219, 230, 255);stop-opacity:1" />
+          <stop offset="100%" style="stop-color:rgb(20, 64, 193);stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <polygon points="0,69.3  40,0 80,69.3" style="fill:url(#grad1);" />
+    </svg>
     <div id='title'>
       <h1>Skiturer i Norge</h1>
       <p>en rute aggregator</p>
@@ -125,16 +126,20 @@ var scale = L.control.scale({'imperial':false}).addTo(map)
 
 // tiles
 var baseLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',{
-  attribution: '<a href="http://www.statkart.no">Statkart</a>'
+  doubleClickZoom: false,
+  attribution:'<a href="https://www.kartverket.no">Kartverket</a>',
+  attributionPosition: 'bottomleft'
 }).addTo(map);
 
 var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
-  attribution: '<a href="https://gis3.nve.no/map/rest/services/Bratthet/MapServer">NVE</a>',
+  position:'bottomleft',
+  attribution:'<a href="https://www.nve.no">NVE</a>',
   layers: 'Bratthet_snoskred',
   transparent: true,
   format:'png',
   opacity:0.5
 }).addTo(map);
+
 
 // search
 new L.Control.GPlaceAutocomplete({
@@ -147,7 +152,10 @@ new L.Control.GPlaceAutocomplete({
       }).addTo(map);
 
 // gps
-map.addControl( new L.Control.Gps({position:'topright'}) );
+map.addControl( new L.Control.Gps({
+  position:'topright',
+  autoCenter:true
+}) );
 
 // load data
 $.ajax({
