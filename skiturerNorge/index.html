@@ -13,6 +13,8 @@
   <!-- leaflet gps plugin -->
   <link rel="stylesheet" href="./libs/leaflet-gps/leaflet-gps.min.css" />
   <script src="./libs/leaflet-gps/leaflet-gps.min.js"></script>
+  <!-- vector grid -->
+  <script type="text/javascript"  src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
 
   <!-- leaflet offline plugin -->
   <!-- <script src="./libs/leaflet.offline.min.js"></script> -->
@@ -22,25 +24,28 @@
   <link rel="stylesheet" type="text/css" href='style.css'></link>
 </head>
 <style>
-h1,p{
+div{
   font-family: 'helvetica';
+}
+#title{
+  margin-top: 2%;
 }
 #title h1{
   margin-bottom: 2px;
-  margin-top:13px;
-  padding-left: 105px;
+  margin-top: 0px;
+  font-size: 160%;
 }
 #title p{
   margin-top: 0px;
-  padding-left: 105px;
+  margin-bottom: 0px;
 }
-
 #header{
-  padding: 15px;
   position: absolute;
+  padding: 15px;
   z-index: 10;
+  max-width: 70%;
   width: 380px;
-  height:76px;
+  height: auto;
   float: left;
   background: rgba(255,255,255,0);
   color: rgba(45, 71, 147,0);
@@ -52,25 +57,22 @@ h1,p{
   color: rgba(45, 71, 147,1);
 }
 #logo{
-  position: absolute;
+  position: relative;
   z-index: 11;
-  /* top: 30;
-  left: 30; */
-}
-#logo{
   float:left;
+  margin-right: 5%;
 }
 </style>
 <body>
   <div id='header'>
-    <svg id="logo" height='100' width='100' style="opacity:1;">
+    <svg id="logo">
       <defs>
         <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" style="stop-color:rgb(219, 230, 255);stop-opacity:1" />
           <stop offset="100%" style="stop-color:rgb(20, 64, 193);stop-opacity:1" />
         </linearGradient>
       </defs>
-      <polygon points="0,69.3  40,0 80,69.3" style="fill:url(#grad1);" />
+      <polygon id="logoPoly" points="" style="fill:url(#grad1);" />
     </svg>
     <div id='title'>
       <h1>Skiturer i Norge</h1>
@@ -112,6 +114,15 @@ function addHytta(hytta){
       color:'rgb(162, 0, 0)'
     }).bindPopup(hyttaPopup(hytta)).addTo(map)
 }
+
+// display icon
+var win10p = screen.width*(15/100)
+var logoWidth = Math.min(win10p, 100)
+var logoHeight = logoWidth * Math.sqrt(3) / 2
+var points = "0,"+logoHeight.toString()+" "+(logoWidth/2.0).toString()+",0 "+logoWidth.toString()+","+logoHeight.toString();
+document.getElementById('logoPoly').setAttribute("points",points)
+document.getElementById('logo').setAttribute('height',logoHeight.toString())
+document.getElementById('logo').setAttribute('width',logoWidth.toString())
 
 // change defaults
 var oldOptions = L.Icon.Default.prototype.options
@@ -162,6 +173,23 @@ $.ajax({
   url:'./ut_data.json',
   method:'get',
   success:function(data){
+    // var turerGeoJson = {
+    //     "type": "FeatureCollection",
+    //     "features": data['turer'].map(function(i){
+    //        var feature = {
+    //          'type' : 'Feature',
+    //          'geometry': {
+    //            'type':'LineString',
+    //            'coordinates': i['points']
+    //          },
+    //          'properties':{
+    //            'name': i['name']
+    //          }
+    //       };
+    //     return(feature)
+    //   })
+    // };
+    // L.vectorGrid.slicer(turerGeoJson,{}).addTo(map)
     data['turer'].map(addTur)
     data['hytter'].map(addHytta)
   }
@@ -179,7 +207,7 @@ if (navigator.geolocation) {
 
 // roadmap:
 // - offline feature
-// - gps position marker
 // - more tracks/sources
+// - vector grid paths
 </script>
 </html>
