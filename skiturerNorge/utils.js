@@ -51,13 +51,13 @@ var tilesDb = {
     },
     confirmDelete:function(){
       var that = this
-      confirm('Do you want to delete the current offline map?',function(){
+      if(confirm('Do you want to delete the current offline map?')){
         localforage.clear();
-      })
+      }
     },
-    zoomToBounds:async function(map){
+    zoomToBounds:async function(){
       bounds = await localforage.getItem('bounds')
-      map.setView(,10)
+      map.fitBounds([[bounds._southWest.lat,bounds._southWest.lng],[bounds._northEast.lat,bounds._northEast.lng]])
     }
 };
 

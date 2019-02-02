@@ -319,9 +319,9 @@
           self._baseLayer.fire('offline:save-start', {
               nTilesToSave: tileUrls.length
           });
-          self._tilesDb.setBounds(bounds)
           self._tilesDb.saveTiles(tileUrls,bounds).then(function () {
               self._baseLayer.fire('offline:save-end');
+              self._tilesDb.setBounds(latlngBounds)
           }).catch(function (err) {
               self._baseLayer.fire('offline:save-error', {
                   error: err

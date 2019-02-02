@@ -78,10 +78,10 @@ var baseLayer = L.tileLayer.offline('https://opencache.statkart.no/gatekeeper/gk
   attribution:'<a href="https://www.kartverket.no">Kartverket</a>',
   attributionPosition: 'bottomleft'
 }).addTo(map).on('offline:save-start',function(){
-  alert('Downloading Selected Area')
+  alert('start')
 }).on('offline:save-end',function(){
-  alert('Download finished')
-});
+  alert('end')
+})
 
 // steepness layer
 // var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
@@ -113,7 +113,7 @@ L.Control.OfflineSelect = L.Control.extend({
     container.innerHTML = '<img style="padding:5px;cursor:pointer;" width="20px" height="20px" src="https://img.icons8.com/material/24/000000/download.png">'
 
     container.onclick = async function(){
-      let offlineMapSaved = !(await localforage.getItem("bounds") === null)
+      let offlineMapSaved = !(await tilesDb.getBounds() === null)
       let selectAreaActive = this.getAttribute('data-selectAreaActive')=='true'
       if(!selectAreaActive & !offlineMapSaved){
         areaSelect._container.style.opacity=1
@@ -121,8 +121,8 @@ L.Control.OfflineSelect = L.Control.extend({
       }else if(!selectAreaActive & offlineMapSaved){
         map.fire('modal', {
             content: '<b>Offline Map:</b><br>\
-            <p class="modalButton" onclick="">Zoom to map</p>\
-            <p class="modalButton" onclick="tilesDb.confirmDelete()">Delete map</p>',        // HTML string
+            <p class="modalButton" onclick="tilesDb.zoomToBounds();map.closeModal()">Zoom to map</p>\
+            <p class="modalButton" onclick="tilesDb.confirmDelete();map.closeModal()">Delete map</p>',        // HTML string
             MODAL_CLS: 'modal',
             zIndex: 10000,                       // needs to stay on top of the things
           });
