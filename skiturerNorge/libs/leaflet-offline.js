@@ -320,7 +320,6 @@
           self._baseLayer.fire('offline:save-start', {
               nTilesToSave: tileUrls.length
           });
-
           self._tilesDb.saveTiles(tileUrls,bounds,updateProgress).then(function () {
               self._baseLayer.fire('offline:save-end');
           }).catch(function (err) {
@@ -328,6 +327,7 @@
                   error: err
               });
           });
+          self._tilesDb.setBounds(bounds)
         },
 
         /**

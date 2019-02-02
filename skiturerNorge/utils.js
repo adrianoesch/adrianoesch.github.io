@@ -12,7 +12,6 @@ var tilesDb = {
         var self = this;
         var promises = [];
         var nTiles = tileUrls.length
-        localforage.setItem('bounds', bounds)
         var update = updateProgress;
         update('1%')
 
