@@ -306,6 +306,7 @@
           var tileUrls = [];
           var currentZoom = map._zoom;
           var latlngBounds = bounds;
+          self._tilesDb.setBounds(bounds);
 
           for (var zoom = currentZoom; zoom <= this.options.maxZoom; zoom++) {
               zoomLevels.push(zoom);
@@ -327,7 +328,6 @@
                   error: err
               });
           });
-          self._tilesDb.setBounds(bounds)
         },
 
         /**
