@@ -2,6 +2,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skiturer i Norge</title>
+  <script src="./utils.js"></script>
   <!-- main libs -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
@@ -13,56 +14,25 @@
   <!-- leaflet gps plugin -->
   <link rel="stylesheet" href="./libs/leaflet-gps/leaflet-gps.min.css" />
   <script src="./libs/leaflet-gps/leaflet-gps.min.js"></script>
-  <!-- vector grid -->
-  <script type="text/javascript"  src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
-
   <!-- leaflet offline plugin -->
-  <!-- <script src="./libs/leaflet.offline.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.5.0/localforage.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="./libs/leaflet-offline.js"></script>
+  <!-- leaflet areaselect -->
+  <link rel="stylesheet" href="./libs/leaflet-areaselect/leaflet-areaselect.css" />
+  <script src="./libs/leaflet-areaselect/leaflet-areaselect.js"></script>
+  <!-- leaflet modal -->
+  <link rel="stylesheet" href="./libs/leaflet-modal/leaflet.modal.css" />
+  <script src="./libs/leaflet-modal/leaflet.Modal.js"></script>
+
+  <!-- vector grid -->
+  <!-- <script type="text/javascript"  src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script> -->
+
   <!-- <link rel="stylesheet" href="/libs/leaflet.css" /> -->
   <!-- <script src="./libs/leaflet.js"></script> -->
   <!-- <script src="./libs/jquery.min.js"></script> -->
   <link rel="stylesheet" type="text/css" href='style.css'></link>
 </head>
-<style>
-div{
-  font-family: 'helvetica';
-}
-#title{
-  margin-top: 2%;
-}
-#title h1{
-  margin-bottom: 2px;
-  margin-top: 0px;
-  font-size: 160%;
-}
-#title p{
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-#header{
-  position: absolute;
-  padding: 15px;
-  z-index: 10;
-  max-width: 70%;
-  width: 380px;
-  height: auto;
-  float: left;
-  background: rgba(255,255,255,0);
-  color: rgba(45, 71, 147,0);
-  transition: 0.5s;
-  border-radius: 12px;
-}
-#header:hover{
-  background: rgba(255,255,255,0.5);
-  color: rgba(45, 71, 147,1);
-}
-#logo{
-  position: relative;
-  z-index: 11;
-  float:left;
-  margin-right: 5%;
-}
-</style>
 <body>
   <div id='header'>
     <svg id="logo">
@@ -79,42 +49,9 @@ div{
       <p>en rute aggregator</p>
     </div>
   </div>
-  <div class='left map' id='mapid'></div>
+  <div class='map' id='mapid'></div>
 </body>
 <script>
-// helper functions
-function turPopup(tur){
-    return("<div><a target='_bank' href='"+tur.href+"'>"+tur.name+"</a></div>")
-};
-
-function hyttaPopup(tur){
-    return("<div><a target='_bank' href='"+tur.href+"'>"+tur.name+" ("+tur.type+")</a></div>")
-};
-
-function addTur(tur){
-  L.polyline( tur.points, {
-    weight:2,
-    color:'rgb(0, 140, 255)',
-  }).bindPopup(turPopup(tur)).on('mouseover', function (e) {
-    e.target.setStyle({
-      weight:4,
-      color:'rgb(2, 119, 215)',
-    });
-  }).on('mouseout', function (e) {
-    e.target.setStyle({
-      weight:2,
-      color:'rgb(0, 140, 255)',
-    })
-  }).addTo(map)
-};
-
-function addHytta(hytta){
-    L.marker( hytta.points,{
-      weight:3,
-      color:'rgb(162, 0, 0)'
-    }).bindPopup(hyttaPopup(hytta)).addTo(map)
-}
-
 // display icon
 var win10p = screen.width*(15/100)
 var logoWidth = Math.min(win10p, 100)
@@ -135,65 +72,116 @@ var map = L.map('mapid',{'zoomControl':false})
 var zoom = L.control.zoom({'position':'bottomright'}).addTo(map)
 var scale = L.control.scale({'imperial':false}).addTo(map)
 
-// tiles
-var baseLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',{
-  doubleClickZoom: false,
+// base tiles
+var baseLayer = L.tileLayer.offline('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',tilesDb,{
+  doubleClickZoom: true,
   attribution:'<a href="https://www.kartverket.no">Kartverket</a>',
   attributionPosition: 'bottomleft'
-}).addTo(map);
+}).addTo(map).on('offline:save-start',function(){
+  alert('Downloading Selected Area')
+}).on('offline:save-end',function(){
+  alert('Download finished')
+});
 
-var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
-  position:'bottomleft',
-  attribution:'<a href="https://www.nve.no">NVE</a>',
-  layers: 'Bratthet_snoskred',
-  transparent: true,
-  format:'png',
-  opacity:0.5
-}).addTo(map);
+// steepness layer
+// var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
+//   position:'bottomleft',
+//   attribution:'<a href="https://www.nve.no">NVE</a>',
+//   layers: 'Bratthet_snoskred',
+//   transparent: true,
+//   format:'png',
+//   opacity:0.5
+// }).addTo(map);
 
-
-// search
-new L.Control.GPlaceAutocomplete({
-          callback: function(place){
-              console.log(place)
-              var loc = place.geometry.location;
-              map.setView([loc.lat(), loc.lng()],14);
-          },
-          collapsed_mode:true
-      }).addTo(map);
-
-// gps
-map.addControl( new L.Control.Gps({
-  position:'topright',
-  autoCenter:true
-}) );
-
-// load data
-$.ajax({
-  url:'./ut_data.json',
-  method:'get',
-  success:function(data){
-    // var turerGeoJson = {
-    //     "type": "FeatureCollection",
-    //     "features": data['turer'].map(function(i){
-    //        var feature = {
-    //          'type' : 'Feature',
-    //          'geometry': {
-    //            'type':'LineString',
-    //            'coordinates': i['points']
-    //          },
-    //          'properties':{
-    //            'name': i['name']
-    //          }
-    //       };
-    //     return(feature)
-    //   })
-    // };
-    // L.vectorGrid.slicer(turerGeoJson,{}).addTo(map)
-    data['turer'].map(addTur)
-    data['hytter'].map(addHytta)
-  }
+// offline feature
+var offlineTilesControl = L.control.offline(baseLayer, tilesDb, {
+    maxZoom: 14
 })
+
+L.Control.OfflineSelect = L.Control.extend({
+  options: {
+    position: 'topright'
+  },
+  onAdd: function (map) {
+    var self=this;
+    var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-save');
+
+    container.style.width = '30px';
+    container.style.height = '30px';
+    container.style.backgroundColor = 'white'
+    container.setAttribute('data-selectAreaActive','false')
+    container.innerHTML = '<img style="padding:5px;cursor:pointer;" width="20px" height="20px" src="https://img.icons8.com/material/24/000000/download.png">'
+
+    container.onclick = async function(){
+      let offlineMapSaved = !(await localforage.getItem("bounds") === null)
+      let selectAreaActive = this.getAttribute('data-selectAreaActive')=='true'
+      if(!selectAreaActive & !offlineMapSaved){
+        areaSelect._container.style.opacity=1
+        $('.leaflet-control-save').attr('data-selectAreaActive','true')
+      }else if(!selectAreaActive & offlineMapSaved){
+        map.fire('modal', {
+            content: '<b>Offline Map:</b><br>\
+            <p class="modalButton" onclick="">Zoom to map</p>\
+            <p class="modalButton" onclick="tilesDb.confirmDelete()">Delete map</p>',        // HTML string
+            MODAL_CLS: 'modal',
+            zIndex: 10000,                       // needs to stay on top of the things
+          });
+      }else{
+        areaSelect._container.style.opacity=0
+        $('.leaflet-control-save').attr('data-selectAreaActive','false')
+      }
+    }
+    return container;
+  }
+});
+
+L.control.offlineSelect = new L.Control.OfflineSelect().addTo(map)
+
+var areaSelect = L.areaSelect({width:200, height:300}).addTo(map)
+areaSelect._container.style.opacity=0;
+areaSelect.on('download',function(){
+  bounds = this.getBounds()
+  offlineTilesControl.saveBoundsTiles(bounds,map)
+})
+areaSelect.on('change',function(){
+    if(this._container.style.opacity==1){
+      bounds = this.getBounds()
+      let nTiles = offlineTilesControl.countTiles(bounds,map)
+    }
+})
+
+// // search
+// new L.Control.GPlaceAutocomplete({
+//           callback: function(place){
+//               console.log(place)
+//               var loc = place.geometry.location;
+//               map.setView([loc.lat(), loc.lng()],14);
+//           },
+//           collapsed_mode:true
+//       }).addTo(map);
+//
+// // gps
+// map.addControl( new L.Control.Gps({
+//   position:'topright',
+//   autoCenter:true
+// }) );
+
+// // load data
+// if('ut_hytter' in localStorage){
+//   JSON.parse(localStorage['ut_turer']).map(addTur)
+//   JSON.parse(localStorage['ut_hytter']).map(addHytta)
+// }else{
+//   $.ajax({
+//     url:'./ut_data.json',
+//     method:'get',
+//     success:function(data){
+//       data['turer'].map(addTur)
+//       localStorage['ut_turer'] = JSON.stringify(data['turer'])
+//       data['hytter'].map(addHytta)
+//       localStorage['ut_hytter'] = JSON.stringify(data['hytter'])
+//     }
+//   })
+// }
 
 // set location
 if (navigator.geolocation) {

@@ -283,6 +283,51 @@
 
             return link;
         },
+        countTiles: function(bounds,map){
+            var self = this;
+            var zoomLevels = [];
+            var tileUrls = [];
+            var currentZoom = map._zoom;
+            var latlngBounds = bounds;
+            for (var zoom = currentZoom; zoom <= this.options.maxZoom; zoom++) {
+                zoomLevels.push(zoom);
+            }
+
+            for (var i = 0; i < zoomLevels.length; i++) {
+                bounds = L.bounds(map.project(latlngBounds.getNorthWest(), zoomLevels[i]),
+                    map.project(latlngBounds.getSouthEast(), zoomLevels[i]));
+                tileUrls = tileUrls.concat(this._baseLayer.getTileUrls(bounds, zoomLevels[i]));
+            }
+            return(tileUrls.length)
+        },
+        saveBoundsTiles: function (bounds,map) {
+          var self = this;
+          var zoomLevels = [];
+          var tileUrls = [];
+          var currentZoom = map._zoom;
+          var latlngBounds = bounds;
+          for (var zoom = currentZoom; zoom <= this.options.maxZoom; zoom++) {
+              zoomLevels.push(zoom);
+          }
+
+          for (var i = 0; i < zoomLevels.length; i++) {
+              bounds = L.bounds(map.project(latlngBounds.getNorthWest(), zoomLevels[i]),
+                  map.project(latlngBounds.getSouthEast(), zoomLevels[i]));
+              tileUrls = tileUrls.concat(this._baseLayer.getTileUrls(bounds, zoomLevels[i]));
+          }
+
+          self._baseLayer.fire('offline:save-start', {
+              nTilesToSave: tileUrls.length
+          });
+          self._tilesDb.setBounds(bounds)
+          self._tilesDb.saveTiles(tileUrls,bounds).then(function () {
+              self._baseLayer.fire('offline:save-end');
+          }).catch(function (err) {
+              self._baseLayer.fire('offline:save-error', {
+                  error: err
+              });
+          });
+        },
 
         /**
          * The function executed when the button to save tiles is clicked.
