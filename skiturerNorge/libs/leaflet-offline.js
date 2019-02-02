@@ -300,12 +300,13 @@
             }
             return(tileUrls.length)
         },
-        saveBoundsTiles: function (bounds,map) {
+        saveBoundsTiles: function (bounds,map,updateProgress=null) {
           var self = this;
           var zoomLevels = [];
           var tileUrls = [];
           var currentZoom = map._zoom;
           var latlngBounds = bounds;
+
           for (var zoom = currentZoom; zoom <= this.options.maxZoom; zoom++) {
               zoomLevels.push(zoom);
           }
@@ -319,9 +320,9 @@
           self._baseLayer.fire('offline:save-start', {
               nTilesToSave: tileUrls.length
           });
-          self._tilesDb.saveTiles(tileUrls,bounds).then(function () {
+
+          self._tilesDb.saveTiles(tileUrls,bounds,updateProgress).then(function () {
               self._baseLayer.fire('offline:save-end');
-              self._tilesDb.setBounds(latlngBounds)
           }).catch(function (err) {
               self._baseLayer.fire('offline:save-error', {
                   error: err

@@ -27,7 +27,7 @@
 }
 .leaflet-areaselect-progress{
   position: absolute;
-  background:red;
+  background:#b90d0d;
   color:white;
   font-weight: bold;
   font-size: 20px;
@@ -35,4 +35,10 @@
   height:70px;
   border-radius: 35px;
   text-align: center;
+  top: 50%;
+  left: 50%;
+  margin-top: -35px;
+  margin-left: -35px;
+  visibility: hidden;
+  line-height: 70px;
 }

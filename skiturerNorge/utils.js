@@ -8,43 +8,51 @@ var tilesDb = {
     getBounds: async function (bounds){
       return await localforage.getItem('bounds')
     },
-    saveTiles: function (tileUrls) {
+    saveTiles: function (tileUrls,bounds,updateProgress=null) {
         var self = this;
         var promises = [];
+        var nTiles = tileUrls.length
+        localforage.setItem('bounds', bounds)
+        var update = updateProgress;
+        update('1%')
 
         for (var i = 0; i < tileUrls.length; i++) {
             var tileUrl = tileUrls[i];
 
-            (function (i, tileUrl) {
-                promises[i] = new Promise(function (resolve, reject) {
-                    var request = new XMLHttpRequest();
-                    request.open('GET', tileUrl.url, true);
-                    request.responseType = 'blob';
-                    request.onreadystatechange = function () {
-                        if (request.readyState === XMLHttpRequest.DONE) {
-                            if (request.status === 200) {
-                                resolve(self._saveTile(tileUrl.key, request.response));
-                            } else {
-                                reject({
-                                    status: request.status,
-                                    statusText: request.statusText
-                                });
-                            }
-                        }
-                    };
-                    request.send();
-                });
-            })(i, tileUrl);
+            (function(i,tileUrl,nTiles,update){
+                promises[i] = new Promise( function (resolve, reject) {
+                  var request = new XMLHttpRequest();
+                  request.open('GET', tileUrl.url, true);
+                  request.responseType = 'blob';
+                  request.onreadystatechange = function () {
+                      if (request.readyState === XMLHttpRequest.DONE) {
+                          if (request.status === 200) {
+                              resolve(self._saveTile(tileUrl.key, request.response,nTiles,update));
+                          } else {
+                              reject({
+                                  status: request.status,
+                                  statusText: request.statusText
+                              });
+                          }
+                      }
+                  };
+                  request.send();
+              });
+            })(i,tileUrl,nTiles,update)
         }
         return Promise.all(promises);
     },
     clear: function () {
         return localforage.clear();
     },
-    _saveTile: function (key, value) {
-        return this._removeItem(key).then(function () {
-            return localforage.setItem(key, value);
-        });
+    _saveTile: async function (key, value,nTiles,update) {
+      await this._removeItem(key).then(function () {
+          return localforage.setItem(key, value);
+      });
+      let i = await localforage.length();
+      let updateStr = Math.round(((i-1)/nTiles)*100).toString()+'%';
+      update(updateStr)
+      return
     },
     _removeItem: function (key) {
         return localforage.removeItem(key);

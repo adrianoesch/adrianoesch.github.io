@@ -9,7 +9,8 @@ div{
   font-family: 'helvetica';
 }
 #title{
-  margin-top: 2%;
+  display: table-cell;
+  vertical-align: middle;
 }
 #title h1{
   margin-bottom: 2px;
@@ -20,20 +21,23 @@ div{
   margin-top: 0px;
   margin-bottom: 0px;
 }
-#header{
+#header, #header a{
   position: absolute;
+  display: block;
+  vertical-align: middle;
   padding: 15px;
   z-index: 10;
   max-width: 70%;
-  width: 380px;
+  width: 350px;
   height: auto;
   float: left;
   background: rgba(255,255,255,0);
   color: rgba(45, 71, 147,0);
   transition: 0.5s;
   border-radius: 12px;
+  margin:15px;
 }
-#header:hover{
+#header:hover,#header a:hover{
   background: rgba(255,255,255,0.5);
   color: rgba(45, 71, 147,1);
 }

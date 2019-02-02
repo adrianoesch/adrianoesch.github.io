@@ -20,7 +20,7 @@
   <script src="./libs/leaflet-offline.js"></script>
   <!-- leaflet areaselect -->
   <link rel="stylesheet" href="./libs/leaflet-areaselect/leaflet-areaselect.css" />
-  <script src="./libs/leaflet-areaselect/leaflet-areaselect.js"></script>
+  <script src="./libs/leaflet-areaselect/leaflet-areaselect2.js"></script>
   <!-- leaflet modal -->
   <link rel="stylesheet" href="./libs/leaflet-modal/leaflet.modal.css" />
   <script src="./libs/leaflet-modal/leaflet.Modal.js"></script>
@@ -46,7 +46,7 @@
     </svg>
     <div id='title'>
       <h1>Skiturer i Norge</h1>
-      <p>en rute aggregator</p>
+      <p>En rute aggregator (<a target="_blank" href="https://github.com/adrianoesch/adrianoesch.github.io/tree/master/skiturerNorge">more</a>)</p>
     </div>
   </div>
   <div class='map' id='mapid'></div>
@@ -54,7 +54,7 @@
 <script>
 // display icon
 var win10p = screen.width*(15/100)
-var logoWidth = Math.min(win10p, 100)
+var logoWidth = Math.min(win10p, 80)
 var logoHeight = logoWidth * Math.sqrt(3) / 2
 var points = "0,"+logoHeight.toString()+" "+(logoWidth/2.0).toString()+",0 "+logoWidth.toString()+","+logoHeight.toString();
 document.getElementById('logoPoly').setAttribute("points",points)
@@ -79,6 +79,8 @@ var baseLayer = L.tileLayer.offline('https://opencache.statkart.no/gatekeeper/gk
   attributionPosition: 'bottomleft'
 }).addTo(map).on('offline:save-end',function(){
   alert('The selected area was successfully stored.')
+  areaSelect.hideProgress()
+  areaSelect.hide()
 })
 
 // steepness layer
@@ -135,14 +137,14 @@ L.Control.OfflineSelect = L.Control.extend({
 
 L.control.offlineSelect = new L.Control.OfflineSelect().addTo(map)
 
-var areaSelect = L.areaSelect({width:200, height:300}).addTo(map)
-areaSelect._container.style.opacity=0;
+var areaSelect = L.areaSelect({width:100, height:100}).addTo(map)
+areaSelect.hide()
+
 areaSelect.on('download',function(){
   let bounds = this.getBounds()
   let nTiles = offlineTilesControl.countTiles(bounds,map)
   if(nTiles<600){
-      offlineTilesControl.saveBoundsTiles(bounds,map)
-      areaSelect._container.style.opacity=0;
+      offlineTilesControl.saveBoundsTiles(bounds,map,areaSelect.updateProgress)
   }else{
     let perTooBig = Math.round(((nTiles/600)-1)*100)
     alert('The selected area is too big (~'+perTooBig.toString()+'%). Please select a smaller area.')
@@ -190,13 +192,15 @@ if('ut_hytter' in localStorage){
 
 // set location
 if (navigator.geolocation) {
-  map.setView([62.5942, 9.6912], 10);
+  map.setView([62.5942, 9.6912], 12);
   navigator.geolocation.getCurrentPosition(function(position){
     map.setView([position.coords.latitude, position.coords.longitude], 10);
   });
 } else {
-  map.setView([62.5942, 9.6912], 10);
+  map.setView([62.5942, 9.6912], 12);
 }
+
+localforage.clear()
 
 // roadmap:
 // - offline steepness layer
