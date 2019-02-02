@@ -77,21 +77,19 @@ var baseLayer = L.tileLayer.offline('https://opencache.statkart.no/gatekeeper/gk
   doubleClickZoom: true,
   attribution:'<a href="https://www.kartverket.no">Kartverket</a>',
   attributionPosition: 'bottomleft'
-}).addTo(map).on('offline:save-start',function(){
-  alert('start')
-}).on('offline:save-end',function(){
-  alert('end')
+}).addTo(map).on('offline:save-end',function(){
+  alert('The selected area was successfully stored.')
 })
 
 // steepness layer
-// var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
-//   position:'bottomleft',
-//   attribution:'<a href="https://www.nve.no">NVE</a>',
-//   layers: 'Bratthet_snoskred',
-//   transparent: true,
-//   format:'png',
-//   opacity:0.5
-// }).addTo(map);
+var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
+  position:'bottomleft',
+  attribution:'<a href="https://www.nve.no">NVE</a>',
+  layers: 'Bratthet_snoskred',
+  transparent: true,
+  format:'png',
+  opacity:0.5
+}).addTo(map);
 
 // offline feature
 var offlineTilesControl = L.control.offline(baseLayer, tilesDb, {
@@ -140,8 +138,15 @@ L.control.offlineSelect = new L.Control.OfflineSelect().addTo(map)
 var areaSelect = L.areaSelect({width:200, height:300}).addTo(map)
 areaSelect._container.style.opacity=0;
 areaSelect.on('download',function(){
-  bounds = this.getBounds()
-  offlineTilesControl.saveBoundsTiles(bounds,map)
+  let bounds = this.getBounds()
+  let nTiles = offlineTilesControl.countTiles(bounds,map)
+  if(nTiles<600){
+      offlineTilesControl.saveBoundsTiles(bounds,map)
+      areaSelect._container.style.opacity=0;
+  }else{
+    let perTooBig = Math.round(((nTiles/600)-1)*100)
+    alert('The selected area is too big (~'+perTooBig.toString()+'%). Please select a smaller area.')
+  }
 })
 areaSelect.on('change',function(){
     if(this._container.style.opacity==1){
@@ -151,37 +156,37 @@ areaSelect.on('change',function(){
 })
 
 // // search
-// new L.Control.GPlaceAutocomplete({
-//           callback: function(place){
-//               console.log(place)
-//               var loc = place.geometry.location;
-//               map.setView([loc.lat(), loc.lng()],14);
-//           },
-//           collapsed_mode:true
-//       }).addTo(map);
-//
-// // gps
-// map.addControl( new L.Control.Gps({
-//   position:'topright',
-//   autoCenter:true
-// }) );
+new L.Control.GPlaceAutocomplete({
+          callback: function(place){
+              console.log(place)
+              var loc = place.geometry.location;
+              map.setView([loc.lat(), loc.lng()],14);
+          },
+          collapsed_mode:true
+      }).addTo(map);
+
+// gps
+map.addControl( new L.Control.Gps({
+  position:'topright',
+  autoCenter:true
+}) );
 
 // // load data
-// if('ut_hytter' in localStorage){
-//   JSON.parse(localStorage['ut_turer']).map(addTur)
-//   JSON.parse(localStorage['ut_hytter']).map(addHytta)
-// }else{
-//   $.ajax({
-//     url:'./ut_data.json',
-//     method:'get',
-//     success:function(data){
-//       data['turer'].map(addTur)
-//       localStorage['ut_turer'] = JSON.stringify(data['turer'])
-//       data['hytter'].map(addHytta)
-//       localStorage['ut_hytter'] = JSON.stringify(data['hytter'])
-//     }
-//   })
-// }
+if('ut_hytter' in localStorage){
+  JSON.parse(localStorage['ut_turer']).map(addTur)
+  JSON.parse(localStorage['ut_hytter']).map(addHytta)
+}else{
+  $.ajax({
+    url:'./ut_data.json',
+    method:'get',
+    success:function(data){
+      data['turer'].map(addTur)
+      localStorage['ut_turer'] = JSON.stringify(data['turer'])
+      data['hytter'].map(addHytta)
+      localStorage['ut_hytter'] = JSON.stringify(data['hytter'])
+    }
+  })
+}
 
 // set location
 if (navigator.geolocation) {
@@ -194,7 +199,7 @@ if (navigator.geolocation) {
 }
 
 // roadmap:
-// - offline feature
+// - offline steepness layer
 // - more tracks/sources
 // - vector grid paths
 </script>
