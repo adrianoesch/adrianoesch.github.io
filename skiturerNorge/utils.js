@@ -8,12 +8,16 @@ var tilesDb = {
     getBounds: async function (bounds){
       return await localforage.getItem('bounds')
     },
+    nTiles:null,
+    setNTiles:function(nTiles){
+      this.nTiles=nTiles;
+    },
+    nLayerDownloadSuccess:0,
     saveTiles: function (tileUrls,bounds,updateProgress=null) {
         var self = this;
         var promises = [];
         var nTiles = tileUrls.length
         var update = updateProgress;
-        update('1%')
 
         for (var i = 0; i < tileUrls.length; i++) {
             var tileUrl = tileUrls[i];
@@ -26,7 +30,7 @@ var tilesDb = {
                   request.onreadystatechange = function () {
                       if (request.readyState === XMLHttpRequest.DONE) {
                           if (request.status === 200) {
-                              resolve(self._saveTile(tileUrl.key, request.response,nTiles,update));
+                              resolve(self._saveTile(tileUrl.key, request.response, update));
                           } else {
                               reject({
                                   status: request.status,
@@ -44,13 +48,12 @@ var tilesDb = {
     clear: function () {
         return localforage.clear();
     },
-    _saveTile: async function (key, value,nTiles,update) {
+    _saveTile: async function (key, value,update) {
       await this._removeItem(key).then(function () {
           return localforage.setItem(key, value);
       });
       let i = await localforage.length();
-      let updateStr = Math.round(((i-1)/nTiles)*100).toString()+'%';
-      update(updateStr)
+      update(i)
       return
     },
     _removeItem: function (key) {

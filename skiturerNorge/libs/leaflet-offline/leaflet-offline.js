@@ -151,9 +151,7 @@
                     });
                 }
             }
-
             this.setUrl(originalurl, true);
-
             return tiles;
         },
 
@@ -174,6 +172,52 @@
             }
 
             return key || url;
+        },
+        countTiles: function(bounds,map){
+            var self = this;
+            var zoomLevels = [];
+            var tileUrls = [];
+            var currentZoom = map._zoom;
+            var latlngBounds = bounds;
+            for (var zoom = currentZoom; zoom <= this.options.maxZoomOffline; zoom++) {
+                zoomLevels.push(zoom);
+            }
+
+            for (var i = 0; i < zoomLevels.length; i++) {
+                bounds = L.bounds(map.project(latlngBounds.getNorthWest(), zoomLevels[i]),
+                    map.project(latlngBounds.getSouthEast(), zoomLevels[i]));
+                tileUrls = tileUrls.concat(self.getTileUrls(bounds, zoomLevels[i]));
+            }
+            return(tileUrls.length)
+        },
+        saveBoundsTiles: function (bounds,map,updateProgress=null,callback) {
+          var self = this;
+          var zoomLevels = [];
+          var tileUrls = [];
+          var currentZoom = map._zoom;
+          var latlngBounds = bounds;
+          self._tilesDb.setBounds(bounds);
+
+          for (var zoom = currentZoom; zoom <= this.options.maxZoomOffline; zoom++) {
+              zoomLevels.push(zoom);
+          }
+
+          for (var i = 0; i < zoomLevels.length; i++) {
+              bounds = L.bounds(map.project(latlngBounds.getNorthWest(), zoomLevels[i]),
+                  map.project(latlngBounds.getSouthEast(), zoomLevels[i]));
+              tileUrls = tileUrls.concat(self.getTileUrls(bounds, zoomLevels[i]));
+          }
+
+          self.fire('offline:save-start', {
+              nTilesToSave: tileUrls.length
+          });
+          self._tilesDb.saveTiles(tileUrls,bounds,updateProgress).then(function () {
+              callback.call()
+          }).catch(function (err) {
+              self.fire('offline:save-error', {
+                  error: err
+              });
+          });
         },
     });
 
@@ -289,7 +333,7 @@
             var tileUrls = [];
             var currentZoom = map._zoom;
             var latlngBounds = bounds;
-            for (var zoom = currentZoom; zoom <= this.options.maxZoom; zoom++) {
+            for (var zoom = currentZoom; zoom <= this.options.maxZoomOffline; zoom++) {
                 zoomLevels.push(zoom);
             }
 
@@ -308,23 +352,23 @@
           var latlngBounds = bounds;
           self._tilesDb.setBounds(bounds);
 
-          for (var zoom = currentZoom; zoom <= this.options.maxZoom; zoom++) {
+          for (var zoom = currentZoom; zoom <= this.options.maxZoomOffline; zoom++) {
               zoomLevels.push(zoom);
           }
 
           for (var i = 0; i < zoomLevels.length; i++) {
               bounds = L.bounds(map.project(latlngBounds.getNorthWest(), zoomLevels[i]),
                   map.project(latlngBounds.getSouthEast(), zoomLevels[i]));
-              tileUrls = tileUrls.concat(this._baseLayer.getTileUrls(bounds, zoomLevels[i]));
+              tileUrls = tileUrls.concat(this.getTileUrls(bounds, zoomLevels[i]));
           }
 
-          self._baseLayer.fire('offline:save-start', {
+          self.fire('offline:save-start', {
               nTilesToSave: tileUrls.length
           });
           self._tilesDb.saveTiles(tileUrls,bounds,updateProgress).then(function () {
-              self._baseLayer.fire('offline:save-end');
+              self.fire('offline:save-end');
           }).catch(function (err) {
-              self._baseLayer.fire('offline:save-error', {
+              self.fire('offline:save-error', {
                   error: err
               });
           });

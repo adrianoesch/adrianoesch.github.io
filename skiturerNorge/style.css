@@ -21,7 +21,7 @@ div{
   margin-top: 0px;
   margin-bottom: 0px;
 }
-#header, #header a{
+#header{
   position: absolute;
   display: block;
   vertical-align: middle;
@@ -37,7 +37,11 @@ div{
   border-radius: 12px;
   margin:15px;
 }
-#header:hover,#header a:hover{
+#header a {
+  color: inherit;
+  text-decoration: none;
+}
+#header:hover{
   background: rgba(255,255,255,0.5);
   color: rgba(45, 71, 147,1);
 }

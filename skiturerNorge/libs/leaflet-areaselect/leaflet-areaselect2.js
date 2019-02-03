@@ -6,7 +6,6 @@ L.AreaSelect = L.Class.extend({
         height: 300,
         keepAspectRatio: false,
     },
-
     initialize: function(options) {
         L.Util.setOptions(this, options);
 
@@ -19,12 +18,17 @@ L.AreaSelect = L.Class.extend({
     show:function(){
       this._container.style.opacity=1;
     },
-    updateProgress:function(updateStr){
+    updateProgress:function(i){
+      let updateStr = Math.round(((i-1)/tilesDb.nTiles)*100).toString()+'%';
       progress = document.querySelector('.leaflet-areaselect-progress')
-      progress.style.visibility = 'visible';
       progress.innerHTML = updateStr
     },
-    hideProgress:function(){
+    startProgress:function(){
+      progress = document.querySelector('.leaflet-areaselect-progress')
+      progress.style.visibility = 'visible';
+      progress.innerHTML = '1%'
+    },
+    endProgress:function(){
       this._progress.style.visibility = 'hidden';
     },
     addTo: function(map) {
@@ -33,7 +37,6 @@ L.AreaSelect = L.Class.extend({
         this._render();
         return this;
     },
-
     getBounds: function() {
         var size = this.map.getSize();
         var topRight = new L.Point();
@@ -160,6 +163,12 @@ L.AreaSelect = L.Class.extend({
         handle.addEventListener("touchend", this._touchHandler, true);
         handle.addEventListener("touchcancel", this._touchHandler, true);
     },
+    successOfflineLayerDownload:function(){
+      tilesDb.nLayerDownloadSuccess++
+      if(tilesDb.nLayerDownloadSuccess==2){
+        this.fire('downloadEnd')
+      }
+    },
 
     _onMapResize: function() {
         this._render();
@@ -167,10 +176,6 @@ L.AreaSelect = L.Class.extend({
 
     _onMapChange: function() {
         this.fire("change");
-    },
-
-    _onDownload: function() {
-        this.fire("download");
     },
 
     _render: function() {

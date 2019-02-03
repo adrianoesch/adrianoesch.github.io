@@ -18,7 +18,8 @@
   <!-- leaflet offline plugin -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.5.0/localforage.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="./libs/leaflet-offline.js"></script>
+  <script src="./libs/leaflet-offline/leaflet-offline.js"></script>
+  <script src="./libs/leaflet-offline/leaflet-offline.wms.js"></script>
   <!-- leaflet areaselect -->
   <link rel="stylesheet" href="./libs/leaflet-areaselect/leaflet-areaselect.css" />
   <script src="./libs/leaflet-areaselect/leaflet-areaselect2.js"></script>
@@ -47,7 +48,7 @@
     </svg>
     <div id='title'>
       <h1>Skiturer i Norge</h1>
-      <p>En rute aggregator (<a target="_blank" href="https://github.com/adrianoesch/adrianoesch.github.io/tree/master/skiturerNorge">more</a>)</p>
+      <p><a target="_blank" href="https://github.com/adrianoesch/adrianoesch.github.io/tree/master/skiturerNorge">En rute aggregator </a></p>
     </div>
   </div>
   <div class='map' id='mapid'></div>
@@ -78,36 +79,27 @@ var rect
 var baseLayer = L.tileLayer.offline('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',tilesDb,{
   doubleClickZoom: true,
   attribution:'<a href="https://www.kartverket.no">Kartverket</a>',
-  attributionPosition: 'bottomleft'
-}).addTo(map).on('offline:save-end',function(){
-  localforage.getItem('bounds').then(function(bounds){
-    rect = L.rectangle([[bounds._southWest.lat,bounds._southWest.lng],[bounds._northEast.lat,bounds._northEast.lng]],
-      {color: "red", weight: 2,fill:null}).addTo(map);
-  })
-  alert('The selected area was successfully stored.')
-  areaSelect.hideProgress()
-  areaSelect.hide()
-})
+  attributionPosition: 'bottomleft',
+  maxZoomOffline:14,
+}).addTo(map)
 
 // steepness layer
-var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',{
+var bratthet = L.tileLayer.wms.offline('https://gis3.nve.no/map/services/Bratthet/MapServer/WmsServer?',tilesDb,{
   position:'bottomleft',
   attribution:'<a href="https://www.nve.no">NVE</a>',
   layers: 'Bratthet_snoskred',
   transparent: true,
   format:'png',
-  opacity:0.5
+  opacity:0.5,
+  maxZoomOffline:14,
 }).addTo(map);
-
-// offline tiles
-var offlineTilesControl = L.control.offline(baseLayer, tilesDb, {
-    maxZoom: 15
-})
 
 // offline select
 L.Control.OfflineSelect = L.Control.extend({
   options: {
-    position: 'topright'
+    position: 'topright',
+    offlineLayers : [baseLayer,bratthet],
+    maxZoom:14,
   },
   onAdd: function (map) {
     var self=this;
@@ -145,19 +137,39 @@ L.control.offlineSelect = new L.Control.OfflineSelect().addTo(map)
 
 // area select
 var areaSelect = L.areaSelect({width:200, height:200}).on('download',function(){
-  let bounds = this.getBounds()
-  let nTiles = offlineTilesControl.countTiles(bounds,map)
+  let bounds = this.getBounds();
+  let layers = L.control.offlineSelect.options.offlineLayers;
+  let layerTiles = layers.map(function(i){return(i.countTiles(bounds,map))})
+  let nTiles = layerTiles.reduce(function(a,b){return(a+b)});
   if(nTiles<600){
-      offlineTilesControl.saveBoundsTiles(bounds,map,areaSelect.updateProgress)
+    if(confirm('Downloading an offline map will require significant data (~50MB). Do you want to proceed?')){
+      tilesDb.setNTiles(nTiles)
+      this.startProgress()
+      var callback = areaSelect.successOfflineLayerDownload.bind(areaSelect)
+      layers.map(function(i){
+        i.saveBoundsTiles(bounds,map,areaSelect.updateProgress,callback)
+      })
+      map.dragging.disable();
+      map.touchZoom.disable();
+      map.doubleClickZoom.disable();
+      map.scrollWheelZoom.disable();
+    }
   }else{
     let perTooBig = Math.round(((nTiles/600)-1)*100)
     alert('The selected area is too big (~'+perTooBig.toString()+'%). Please select a smaller area.')
   }
-}).on('change',function(){
-    if(this._container.style.opacity==1){
-      bounds = this.getBounds()
-      let nTiles = offlineTilesControl.countTiles(bounds,map)
-    }
+}).on('downloadEnd',function(){
+  localforage.getItem('bounds').then(function(bounds){
+    rect = L.rectangle([[bounds._southWest.lat,bounds._southWest.lng],[bounds._northEast.lat,bounds._northEast.lng]],
+      {color: "red", weight: 2,fill:null}).addTo(map);
+  })
+  alert('The selected area was successfully stored.')
+  areaSelect.endProgress()
+  areaSelect.hide()
+  map.dragging.enable();
+  map.touchZoom.enable();
+  map.doubleClickZoom.enable();
+  map.scrollWheelZoom.enable();
 }).addTo(map)
 areaSelect.hide()
 
@@ -177,7 +189,15 @@ map.addControl( new L.Control.Gps({
   autoCenter:true
 }) );
 
-// // load data
+// draw offline map rect
+localforage.getItem('bounds').then(function(bounds){
+  if(bounds && typeof bounds !='undefined'){
+    rect = L.rectangle([[bounds._southWest.lat,bounds._southWest.lng],[bounds._northEast.lat,bounds._northEast.lng]],
+      {color: "red", weight: 2,fill:null}).addTo(map);
+  }
+})
+
+// load data
 if('ut_hytter' in localStorage){
   JSON.parse(localStorage['ut_turer']).map(addTur)
   JSON.parse(localStorage['ut_hytter']).map(addHytta)
@@ -196,12 +216,11 @@ if('ut_hytter' in localStorage){
 
 // set location
 if (navigator.geolocation) {
-  map.setView([62.5942, 9.6912], 12);
   navigator.geolocation.getCurrentPosition(function(position){
     map.setView([position.coords.latitude, position.coords.longitude], 10);
   });
 } else {
-  map.setView([62.5942, 9.6912], 12);
+  map.setView([60.6585, 6.4653], 12);
 }
 
 // localforage.clear()
