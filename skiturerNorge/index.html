@@ -72,6 +72,7 @@ L.Icon.Default.prototype.options.shadowSize = [0,0] ;
 var map = L.map('mapid',{'zoomControl':false})
 var zoom = L.control.zoom({'position':'bottomright'}).addTo(map)
 var scale = L.control.scale({'imperial':false}).addTo(map)
+var rect
 
 // base tiles
 var baseLayer = L.tileLayer.offline('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}',tilesDb,{
@@ -79,6 +80,10 @@ var baseLayer = L.tileLayer.offline('https://opencache.statkart.no/gatekeeper/gk
   attribution:'<a href="https://www.kartverket.no">Kartverket</a>',
   attributionPosition: 'bottomleft'
 }).addTo(map).on('offline:save-end',function(){
+  localforage.getItem('bounds').then(function(bounds){
+    rect = L.rectangle([[bounds._southWest.lat,bounds._southWest.lng],[bounds._northEast.lat,bounds._northEast.lng]],
+      {color: "red", weight: 2,fill:null}).addTo(map);
+  })
   alert('The selected area was successfully stored.')
   areaSelect.hideProgress()
   areaSelect.hide()
@@ -94,11 +99,12 @@ var bratthet = L.tileLayer.wms('https://gis3.nve.no/map/services/Bratthet/MapSer
   opacity:0.5
 }).addTo(map);
 
-// offline feature
+// offline tiles
 var offlineTilesControl = L.control.offline(baseLayer, tilesDb, {
-    maxZoom: 14
+    maxZoom: 15
 })
 
+// offline select
 L.Control.OfflineSelect = L.Control.extend({
   options: {
     position: 'topright'
@@ -123,7 +129,7 @@ L.Control.OfflineSelect = L.Control.extend({
         map.fire('modal', {
             content: '<b>Offline Map:</b><br>\
             <p class="modalButton" onclick="tilesDb.zoomToBounds();map.closeModal()">Zoom to map</p>\
-            <p class="modalButton" onclick="tilesDb.confirmDelete();map.closeModal()">Delete map</p>',        // HTML string
+            <p class="modalButton" onclick="tilesDb.confirmDelete();rect.remove();map.closeModal()">Delete map</p>',        // HTML string
             MODAL_CLS: 'modal',
             zIndex: 10000,                       // needs to stay on top of the things
           });
@@ -135,13 +141,10 @@ L.Control.OfflineSelect = L.Control.extend({
     return container;
   }
 });
-
 L.control.offlineSelect = new L.Control.OfflineSelect().addTo(map)
 
-var areaSelect = L.areaSelect({width:100, height:100}).addTo(map)
-areaSelect.hide()
-
-areaSelect.on('download',function(){
+// area select
+var areaSelect = L.areaSelect({width:200, height:200}).on('download',function(){
   let bounds = this.getBounds()
   let nTiles = offlineTilesControl.countTiles(bounds,map)
   if(nTiles<600){
@@ -150,13 +153,13 @@ areaSelect.on('download',function(){
     let perTooBig = Math.round(((nTiles/600)-1)*100)
     alert('The selected area is too big (~'+perTooBig.toString()+'%). Please select a smaller area.')
   }
-})
-areaSelect.on('change',function(){
+}).on('change',function(){
     if(this._container.style.opacity==1){
       bounds = this.getBounds()
       let nTiles = offlineTilesControl.countTiles(bounds,map)
     }
-})
+}).addTo(map)
+areaSelect.hide()
 
 // // search
 new L.Control.GPlaceAutocomplete({
