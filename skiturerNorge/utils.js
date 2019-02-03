@@ -102,3 +102,20 @@ function addHytta(hytta){
       color:'rgb(162, 0, 0)'
     }).bindPopup(hyttaPopup(hytta)).addTo(map)
 }
+
+var freezeMap = {
+  on:function(){
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+    zoom._container.style.visibility='hidden';
+  },
+  off:function(){
+    map.dragging.enable();
+    map.touchZoom.enable();
+    map.doubleClickZoom.enable();
+    map.scrollWheelZoom.enable();
+    zoom._container.style.visibility='visible';
+  },
+}

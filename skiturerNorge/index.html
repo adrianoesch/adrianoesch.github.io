@@ -149,10 +149,7 @@ var areaSelect = L.areaSelect({width:200, height:200}).on('download',function(){
       layers.map(function(i){
         i.saveBoundsTiles(bounds,map,areaSelect.updateProgress,callback)
       })
-      map.dragging.disable();
-      map.touchZoom.disable();
-      map.doubleClickZoom.disable();
-      map.scrollWheelZoom.disable();
+      freezeMap.on()
     }
   }else{
     let perTooBig = Math.round(((nTiles/600)-1)*100)
@@ -166,10 +163,7 @@ var areaSelect = L.areaSelect({width:200, height:200}).on('download',function(){
   alert('The selected area was successfully stored.')
   areaSelect.endProgress()
   areaSelect.hide()
-  map.dragging.enable();
-  map.touchZoom.enable();
-  map.doubleClickZoom.enable();
-  map.scrollWheelZoom.enable();
+  freezeMap.off()
 }).addTo(map)
 areaSelect.hide()
 

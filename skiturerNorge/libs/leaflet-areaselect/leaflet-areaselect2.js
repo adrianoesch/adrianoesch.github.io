@@ -24,12 +24,14 @@ L.AreaSelect = L.Class.extend({
       progress.innerHTML = updateStr
     },
     startProgress:function(){
+      this._downloadButton.style.visibility = 'hidden';
       progress = document.querySelector('.leaflet-areaselect-progress')
       progress.style.visibility = 'visible';
       progress.innerHTML = '1%'
     },
     endProgress:function(){
       this._progress.style.visibility = 'hidden';
+      this._downloadButton.style.visibility = 'visible';
     },
     addTo: function(map) {
         this.map = map;
