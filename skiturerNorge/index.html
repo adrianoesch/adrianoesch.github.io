@@ -209,19 +209,19 @@ if('ut_hytter' in localStorage){
 }
 
 // set location
+map.setView([60.6585, 6.4653], 12);
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(function(position){
     map.setView([position.coords.latitude, position.coords.longitude], 10);
   });
-} else {
-  map.setView([60.6585, 6.4653], 12);
 }
 
 // localforage.clear()
 
 // roadmap:
-// - offline steepness layer
+// - embedding yr.no and google maps links
 // - more tracks/sources
 // - vector grid paths
+
 </script>
 </html>
