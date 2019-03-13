@@ -17,10 +17,12 @@ h1{
 <body>
 <h1>&lt;h1&gt;Hello World&lt;/h1&gt;</h1>
 <script>
-var arr = [ 0,1,1,0,1,0,0,0,0,1,1,0,0,1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1,0,0,1,0,0,0,0,0,0,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,1,1,1,0,0,1,0,0,1,1,0,1,1,0,0,0,1,1,0,0,1,0,0 ];
+var hello_world_audio = new Audio('http://www.fromtexttospeech.com/output/0192032001552521157/45753374.mp3')
+var hello_world_bin = [ 0,1,1,0,1,0,0,0,0,1,1,0,0,1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1,0,0,1,0,0,0,0,0,0,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,1,1,1,0,0,1,0,0,1,1,0,1,1,0,0,0,1,1,0,0,1,0,0 ];
+
 var i = 0;
 setInterval(function(){
-  if(arr[i%arr.length]==0){
+  if(hello_world_bin[i%hello_world_bin.length]==0){
     document.body.style.background = 'black'
     document.body.style.color = 'white'
   }else{
@@ -29,6 +31,11 @@ setInterval(function(){
   }
   i = i+1
 },200)
+
+setInterval(function(){
+  hello_world_audio.play()
+},1000)
+
 </script>
 </body>
 </html>
