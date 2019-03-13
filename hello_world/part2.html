@@ -1,0 +1,61 @@
+<html>
+<head>
+  <link rel="icon" href="../favicon.png">
+</head>
+<style>
+body {
+    font-size: 13px;
+    line-height: 17px;
+    width: 400px;
+    height: 400px;
+    top: calc(50% - 200px);
+    position: relative;
+    margin: auto;
+    font-family: courier;
+}
+</style>
+<body>
+function toBinary(string){<br>
+<span style='margin-left:20px'>var ascii = string.split('').map(function(i){</span><br>
+<span style='margin-left:40px'>return(i.charCodeAt(0).toString('2'))</span><br>
+<span style='margin-left:20px'>});</span><br>
+<span style='margin-left:20px'>return(ascii.join(''))</span><br>
+};<br>
+<br>
+var hello_world = toBinary('Hello World');<br>
+<br>
+var i = 0;<br>
+setInterval(function(){<br>
+<span style='margin-left:20px'>if(hello_world[i%hello_world.length]=='1'){</span><br>
+<span style='margin-left:40px'>document.body.style.background = 'black'</span><br>
+<span style='margin-left:40px'>document.body.style.color = 'white'</span><br>
+<span style='margin-left:20px'>}else{</span><br>
+<span style='margin-left:40px'>document.body.style.background = 'white'</span><br>
+<span style='margin-left:40px'>document.body.style.color = 'black'</span><br>
+<span style='margin-left:20px'>}</span><br>
+<span style='margin-left:20px'>i = i+1;</span><br>
+},200);<br>
+</body>
+<script>
+function toBinary(string){
+  var binary = string.split('').map(function(i){
+    return(i.charCodeAt(0).toString('2'))
+  });
+  return(binary.join(''))
+};
+
+var hello_world = toBinary('Hello World');
+
+var i = 0;
+setInterval(function(){
+  if(hello_world[i%hello_world.length]=='1'){
+    document.body.style.background = 'black'
+    document.body.style.color = 'white'
+  }else{
+    document.body.style.background = 'white'
+    document.body.style.color = 'black'
+  }
+  i = i+1;
+},200)
+</script>
+</html>
