@@ -1,0 +1,43 @@
+<html>
+<head>
+  <link rel="icon" href="favicon.png">
+</head>
+<style>
+div{
+  font-size: 50px;
+  width: 600px;
+  height: 60px;
+  position: relative;
+  top: calc(50% - 30px);
+  text-align: center;
+  margin: auto;
+  font-family: helvetica;
+}
+input{
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+}
+</style>
+<body>
+  <div></div>
+  <input type="range" min=1 max=100></input>
+</body>
+<script>
+var hello_world = [ 0,1,1,0,1,0,0,0,0,1,1,0,0,1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1,0,0,1,0,0,0,0,0,0,1,1,1,0,1,1,1,0,1,1,0,1,1,1,1,0,1,1,1,0,0,1,0,0,1,1,0,1,1,0,0,0,1,1,0,0,1,0,0 ];
+
+var i = 0;
+var ms = 1000;
+
+var fun = function(){
+  let bin = hello_world[i%hello_world.length]
+  document.body.firstChild.innerHTML = bin
+  i = i+1
+  setTimeout(fun, ms);
+}
+setTimeout(fun, ms);
+
+
+</script>
+</body>
+</html>
