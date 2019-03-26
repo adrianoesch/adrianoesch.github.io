@@ -7,7 +7,7 @@
     margin: 100px auto;
     font-family: helvetica;
     color: black;
-    background: #ffefef;
+    padding: 20px;
   }
   a{
     color:inherit;
@@ -34,4 +34,10 @@
   </ul>
 <div>
 </body>
+<script>
+var color = [1,2,3].map(function(i){return(
+  200+Math.floor(Math.random()*55)
+)})
+document.body.style.background = 'rgb('+color.join(',')+')'
+</script>
 </html>
